@@ -10,7 +10,7 @@ const PLATFORM_LABELS: Record<PortfolioItem['platform'], string> = {
     instagram: 'IG REELS',
     youtube: 'YOUTUBE',
     commercial: 'COMMERCIAL',
-    other: 'LAINNYA',
+    other: 'OTHER',
 };
 
 function playIcon(size: number) {
@@ -63,7 +63,7 @@ function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) 
                         {platformLabel}
                         {item.category ? ` · ${item.category}` : ''}
                     </span>
-                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Detail segera hadir'}</span>
+                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Details coming soon'}</span>
                 </span>
             </span>
         </>
@@ -81,14 +81,14 @@ function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) 
                     href={item.external_url as string}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Lihat karya ${item.title} (buka di tab baru)`}
+                    aria-label={`View project ${item.title} (opens in new tab)`}
                 >
                     {media}
                 </a>
             ) : (
                 <div
                     className="portfolio-thumb portfolio-thumb-static"
-                    aria-label={`${item.title} — tautan belum tersedia`}
+                    aria-label={`${item.title} — link not available yet`}
                 >
                     {media}
                 </div>
@@ -123,19 +123,19 @@ export default function PortfolioSection({ portfolios }: Props) {
                 <div className="eyebrow" data-reveal>
                     Portfolio
                 </div>
-                <h2 data-reveal>Karya pilihan.</h2>
+                <h2 data-reveal>Selected work.</h2>
                 <p className="sub" data-reveal>
-                    Angka views di bawah diambil dari akun klien masing-masing.
+                    View counts below are pulled from each client's own account.
                 </p>
 
-                <div className="filters" role="group" aria-label="Filter portfolio" data-reveal>
+                <div className="filters" role="group" aria-label="Portfolio filter" data-reveal>
                     <button
                         type="button"
                         className="filter-pill"
                         aria-pressed={activeFilter === 'all'}
                         onClick={() => setActiveFilter('all')}
                     >
-                        Semua
+                        All
                     </button>
                     {platforms.map((platform) => (
                         <button
@@ -158,7 +158,7 @@ export default function PortfolioSection({ portfolios }: Props) {
                     </div>
                 ) : (
                     <div className="portfolio-empty" role="status">
-                        Belum ada karya untuk kategori ini.
+                        No work in this category yet.
                     </div>
                 )}
             </div>

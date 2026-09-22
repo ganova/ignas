@@ -14,9 +14,9 @@ export default function StickyWhatsapp({ text, whatsappUrl }: Props) {
         <div className="wa-bar">
             <span className="wa-bar-text">{text}</span>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                <b>Chat sekarang</b>
+                <b>Chat now</b>
             </a>
-            <button type="button" className="wa-bar-close" aria-label="Sembunyikan" onClick={() => setDismissed(true)}>
+            <button type="button" className="wa-bar-close" aria-label="Dismiss" onClick={() => setDismissed(true)}>
                 ×
             </button>
         </div>

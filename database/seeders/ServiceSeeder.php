@@ -10,10 +10,10 @@ class ServiceSeeder extends Seeder
     public function run(): void
     {
         $items = [
-            ['title' => 'Edit dari footage mentah', 'description' => 'Dari rekaman apa adanya jadi video utuh: struktur, ritme, warna, dan suara.'],
-            ['title' => 'Potong long form', 'description' => 'Podcast atau webinar panjang dipotong jadi klip pendek siap tayang.'],
-            ['title' => 'Subtitle & motion text', 'description' => 'Teks bergerak yang rapi, terbaca, dan sesuai gaya brand kamu.'],
-            ['title' => 'Paket konten bulanan', 'description' => 'Jadwal tetap tiap bulan dengan gaya visual yang konsisten.'],
+            ['title' => 'Raw footage editing', 'description' => 'From unedited clips to a complete video: structure, pacing, color, and sound.'],
+            ['title' => 'Long-form repurposing', 'description' => 'Podcasts or long webinars cut into short, publish-ready clips.'],
+            ['title' => 'Subtitles & motion text', 'description' => 'Clean, readable motion text that matches your brand style.'],
+            ['title' => 'Monthly content package', 'description' => 'A steady monthly schedule with a consistent visual style.'],
         ];
 
         foreach ($items as $i => $item) {

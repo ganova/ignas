@@ -115,7 +115,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
     }
 
     return (
-        <nav className={`site-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Navigasi utama">
+        <nav className={`site-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
             <div className="nav-pill" ref={pillRef}>
                 <a className="nav-logo" href="#hero" onClick={handleLogoClick}>
                     {boldPart}
@@ -161,7 +161,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
                 <button
                     type="button"
                     className={`nav-burger ${menuOpen ? 'is-open' : ''}`}
-                    aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
+                    aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                     aria-expanded={menuOpen}
                     aria-controls="mobile-nav-panel"
                     onClick={() => setMenuOpen((v) => !v)}
@@ -179,7 +179,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
                 ref={menuPanelRef}
                 role="dialog"
                 aria-modal="true"
-                aria-label="Menu navigasi"
+                aria-label="Navigation menu"
                 hidden={!menuOpen}
             >
                 <div className="nav-mobile-links">

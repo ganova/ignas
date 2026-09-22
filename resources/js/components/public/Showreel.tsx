@@ -36,7 +36,7 @@ export default function Showreel({ showreel }: Props) {
                 <button
                     className="reel-play"
                     id="reel-play"
-                    aria-label="Putar showreel"
+                    aria-label="Play showreel"
                     onClick={() => setPlaying(true)}
                 >
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="#0D0D14" aria-hidden="true">

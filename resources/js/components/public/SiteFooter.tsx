@@ -26,7 +26,7 @@ export default function SiteFooter({ identity, contact }: Props) {
                     {identity.location && <p className="footer-location">📍 {identity.location}</p>}
                 </div>
 
-                <nav className="footer-nav" aria-label="Navigasi footer">
+                <nav className="footer-nav" aria-label="Footer navigation">
                     {NAV_SECTIONS.map((section) => (
                         <a
                             key={section.id}

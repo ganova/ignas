@@ -57,7 +57,7 @@ export default function Home({ settings, whatsappUrl, portfolios, services, proc
             </Head>
 
             <a className="skip-link" href="#main-content">
-                Langsung ke konten
+                Skip to content
             </a>
 
             <AmbientBackground blobsEnabled={visual.blobs_enabled} grainEnabled={visual.grain_enabled} />

@@ -10,10 +10,10 @@ class ProcessStepSeeder extends Seeder
     public function run(): void
     {
         $items = [
-            ['label' => 'LANGKAH 1', 'title' => 'Chat WhatsApp', 'description' => 'Ceritakan videonya. Brief santai pun cukup.'],
-            ['label' => 'LANGKAH 2', 'title' => 'Pilih paket', 'description' => 'Saya kasih estimasi waktu dan biaya di depan.'],
-            ['label' => 'LANGKAH 3', 'title' => 'Kirim footage', 'description' => 'Lewat Google Drive. Pengerjaan mulai hari itu juga.'],
-            ['label' => 'LANGKAH 4', 'title' => 'Terima & revisi', 'description' => 'Tiga putaran revisi sudah termasuk.'],
+            ['label' => 'STEP 1', 'title' => 'Chat on WhatsApp', 'description' => 'Tell me about the video. A casual brief is fine.'],
+            ['label' => 'STEP 2', 'title' => 'Pick a package', 'description' => 'I give you an upfront estimate on time and cost.'],
+            ['label' => 'STEP 3', 'title' => 'Send your footage', 'description' => 'Via Google Drive. Work starts the same day.'],
+            ['label' => 'STEP 4', 'title' => 'Review & revise', 'description' => 'Three rounds of revisions included.'],
         ];
 
         foreach ($items as $i => $item) {

@@ -6,12 +6,12 @@ interface Props {
 
 export default function ServicesSection({ services }: Props) {
     return (
-        <section className="section" id="layanan">
+        <section className="section" id="services">
             <div className="wrap">
                 <div className="eyebrow" data-reveal>
-                    Layanan
+                    Services
                 </div>
-                <h2 data-reveal>Yang bisa saya kerjakan.</h2>
+                <h2 data-reveal>What I can do for you.</h2>
                 <div style={{ height: 14 }} />
                 <div className="tiles" data-reveal>
                     {services.map((service, index) => (

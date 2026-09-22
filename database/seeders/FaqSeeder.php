@@ -11,14 +11,14 @@ class FaqSeeder extends Seeder
     {
         $items = [
             [
-                'question' => 'Berapa lama pengerjaan satu video?',
-                'answer' => 'Konten social media 2–3 hari kerja. Commercial atau company profile 1–2 minggu. Dokumenter pendek 2–4 minggu.',
+                'question' => 'How long does one video take?',
+                'answer' => 'Social media content: 2–3 business days. Commercials or company profiles: 1–2 weeks. Short documentaries: 2–4 weeks.',
                 'is_open_by_default' => true,
             ],
-            ['question' => 'Berapa kali revisi yang saya dapat?', 'answer' => null, 'is_open_by_default' => false],
-            ['question' => 'Format file apa saja yang saya terima?', 'answer' => null, 'is_open_by_default' => false],
-            ['question' => 'Apakah menyediakan musik & stock footage?', 'answer' => null, 'is_open_by_default' => false],
-            ['question' => 'Bagaimana sistem pembayarannya?', 'answer' => null, 'is_open_by_default' => false],
+            ['question' => 'How many revisions do I get?', 'answer' => null, 'is_open_by_default' => false],
+            ['question' => 'What file formats will I receive?', 'answer' => null, 'is_open_by_default' => false],
+            ['question' => 'Do you provide music & stock footage?', 'answer' => null, 'is_open_by_default' => false],
+            ['question' => 'How does payment work?', 'answer' => null, 'is_open_by_default' => false],
         ];
 
         foreach ($items as $i => $item) {

@@ -14,14 +14,14 @@ export default function AboutSection({ identity, processSteps }: Props) {
                         <div className="eyebrow" style={{ textAlign: 'left' }}>
                             About Me
                         </div>
-                        <h2 style={{ textAlign: 'left' }}>Halo, saya {identity.owner_name}.</h2>
+                        <h2 style={{ textAlign: 'left' }}>Hi, I'm {identity.owner_name}.</h2>
                         <p className="about-lead">
-                            Enam tahun hidup di depan timeline. Saya percaya editing yang baik itu tidak terasa —
-                            penonton cuma sadar mereka belum bisa berhenti nonton.
+                            Six years living inside the timeline. I believe good editing shouldn't be noticed —
+                            viewers just realize they can't stop watching.
                         </p>
                         <p className="about-lead about-lead-2">
-                            Fokus saya bukan sekadar memotong dan menyusun klip, tapi merancang pacing, ritme, dan momen
-                            retensi yang membuat audiens bertahan sampai akhir — lalu bertindak.
+                            My focus isn't just cutting and arranging clips — it's designing the pacing, rhythm,
+                            and retention moments that keep an audience watching until the end, then acting.
                         </p>
                         {identity.location && <p className="about-location">📍 {identity.location}</p>}
                     </div>
@@ -36,9 +36,9 @@ export default function AboutSection({ identity, processSteps }: Props) {
                 </div>
 
                 <div className="eyebrow about-sub-heading" data-reveal>
-                    Prosesnya
+                    The Process
                 </div>
-                <h2 data-reveal>Empat langkah, tanpa drama.</h2>
+                <h2 data-reveal>Four steps, no drama.</h2>
                 <div style={{ height: 22 }} />
 
                 <div className="steps steps-timeline" data-reveal>

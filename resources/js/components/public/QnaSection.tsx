@@ -13,9 +13,9 @@ export default function QnaSection({ faqs }: Props) {
         <section className="section" id="qna">
             <div className="wrap">
                 <div className="eyebrow" data-reveal>
-                    QnA
+                    FAQ
                 </div>
-                <h2 data-reveal>Pertanyaan yang sering masuk.</h2>
+                <h2 data-reveal>Questions I get a lot.</h2>
                 <div style={{ height: 28 }} />
 
                 <div className="qna-wrap" data-reveal>
@@ -52,7 +52,7 @@ export default function QnaSection({ faqs }: Props) {
                                         {/* Answer HTML is sanitized server-side (TextSanitizer) before storage. */}
                                         <p
                                             dangerouslySetInnerHTML={{
-                                                __html: faq.answer ?? 'Jawaban segera ditambahkan.',
+                                                __html: faq.answer ?? 'Answer coming soon.',
                                             }}
                                         />
                                     </div>

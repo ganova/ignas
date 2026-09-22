@@ -1,0 +1,71 @@
+@import 'tailwindcss';
+
+/* Restrict Tailwind's automatic class scanning to the app's own source,
+   rather than the whole project (which also holds vendor/, node_modules/
+   and a legacy static reference copy of the original design). */
+@source '../js';
+@source '../views';
+
+/*
+ * Design tokens: values are copied verbatim from the original Konsep 02
+ * "Glass Reel" static implementation. Do not change these without a
+ * design decision — the public site's pixel-perfect look depends on them.
+ */
+:root {
+    --color-bg: #f7f8fc;
+    --color-ink: #0d0d14;
+    --color-ink-2: #4d4b5c;
+    --color-ink-3: #7c7a8c;
+    --color-purple: #8b7cff;
+    --color-purple-dark: #7a63ff;
+    --color-blue: #5aa9ff;
+    --color-yellow: #ffc95a;
+    --color-pink: #ffc5e6;
+    --color-green: #34c759;
+
+    --radius-card: 20px;
+    --radius-pill: 999px;
+    --radius-panel: 32px;
+
+    --blur-glass: blur(24px) saturate(180%);
+    --shadow-soft: 0 14px 34px -20px rgba(30, 24, 70, 0.3);
+    --shadow-panel: 0 34px 76px -36px rgba(40, 30, 90, 0.42);
+
+    --container-max: 1060px;
+    --container-pad-desktop: 40px;
+    --container-pad-mobile: 20px;
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family:
+        'Plus Jakarta Sans',
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        sans-serif;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ignas.studio — Video Editor & Motion Designer</title>
+<meta name="description" content="Ignas — video editor & motion designer. Ubah footage mentah jadi tontonan yang tidak bisa di-skip.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="ticks" aria-hidden="true">
+  <span class="on">00:01</span><span>00:02</span><span>00:03</span><span>00:04</span><span>00:05</span>
+</div>
+
+<nav class="site-nav" aria-label="Navigasi utama">
+  <div class="nav-pill">
+    <span class="nav-logo">Ignas<span class="muted">.studio</span></span>
+    <a class="nav-link" href="#portfolio">Portfolio</a>
+    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="#layanan">Layanan</a>
+    <a class="nav-link" href="#qna">QnA</a>
+    <a class="nav-link nav-cta" data-wa href="#" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <div class="wrap">
+      <div class="pill"><span class="dot"></span> <span id="availability-text">Slot Oktober tersisa 2</span></div>
+      <h1>Footage kamu udah bagus,<br><span class="grad-text">tinggal diedit</span> biar nagih.</h1>
+      <p class="lead">Video editor &amp; motion designer. Saya bantu brand dan kreator mengubah footage mentah jadi tontonan yang tidak bisa di-skip.</p>
+      <div class="btns">
+        <a class="btn btn-dark" data-wa href="#" target="_blank" rel="noopener">Kirim Footage</a>
+        <a class="btn btn-glass" href="#reel">Lihat Showreel</a>
+      </div>
+      <div class="stats" id="hero-stats"></div>
+      <div class="reel" id="reel">
+        <button class="reel-play" id="reel-play" aria-label="Putar showreel">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#0D0D14"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <span class="reel-cap">SHOWREEL 2026 · 01:48</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="portfolio">
+    <div class="wrap">
+      <div class="eyebrow">Portfolio</div>
+      <h2>Karya pilihan.</h2>
+      <p class="sub">Angka views di bawah diambil dari akun klien masing-masing.</p>
+      <div class="filters" role="group" aria-label="Filter portfolio">
+        <button class="filter-pill" data-filter="all" aria-pressed="true">Semua</button>
+        <button class="filter-pill" data-filter="tiktok" aria-pressed="false">TikTok</button>
+        <button class="filter-pill" data-filter="instagram" aria-pressed="false">Instagram</button>
+        <button class="filter-pill" data-filter="youtube" aria-pressed="false">YouTube</button>
+        <button class="filter-pill" data-filter="commercial" aria-pressed="false">Commercial</button>
+      </div>
+      <div class="portfolio-grid" id="portfolio-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="layanan">
+    <div class="wrap">
+      <div class="eyebrow">Layanan</div>
+      <h2>Yang bisa saya kerjakan.</h2>
+      <div style="height:14px"></div>
+      <div class="tiles" id="services-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="eyebrow">About Me</div>
+      <h2>Halo, saya Ignas.</h2>
+      <p class="sub">Enam tahun hidup di depan timeline. Saya percaya editing yang baik itu tidak terasa — penonton cuma sadar mereka belum bisa berhenti nonton.</p>
+      <div class="eyebrow about-sub-heading">Prosesnya</div>
+      <h2>Empat langkah, tanpa drama.</h2>
+      <div style="height:22px"></div>
+      <div class="steps" id="process-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="qna">
+    <div class="wrap">
+      <div class="eyebrow">QnA</div>
+      <h2>Pertanyaan yang sering masuk.</h2>
+      <div style="height:28px"></div>
+      <div class="qna-wrap" id="qna-wrap"></div>
+    </div>
+  </section>
+
+  <section class="section" id="cta">
+    <div class="wrap">
+      <div class="cta-panel">
+        <h2>Punya footage yang<br>belum ketemu bentuknya?</h2>
+        <p>Kirim linknya lewat WhatsApp, saya kasih estimasi hari ini juga.</p>
+        <div class="btns">
+          <a class="btn btn-dark" data-wa href="#" target="_blank" rel="noopener">Chat WhatsApp</a>
+          <a class="btn btn-glass" data-email href="#">Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">© 2026 Ignas · Video Editor &amp; Motion Designer</footer>
+
+<div class="wa-bar">
+  Balasan rata-rata &lt; 12 jam
+  <a data-wa href="#" target="_blank" rel="noopener"><b>Chat sekarang</b></a>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

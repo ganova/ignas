@@ -1,0 +1,364 @@
+/*
+ * Admin design system — reuses the exact Glass Reel design tokens from the
+ * public site (see app.css) so the admin feels like the same product,
+ * rendered as a "glass" control panel rather than a copy of the public
+ * marketing page layout.
+ */
+
+.admin-shell {
+    position: relative;
+    min-height: 100vh;
+    background: var(--color-bg);
+    color: var(--color-ink);
+    overflow-x: hidden;
+}
+
+.admin-shell .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.admin-shell .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.35;
+}
+.admin-shell .blob-1 {
+    width: 560px;
+    height: 560px;
+    background: radial-gradient(circle, #b9a9ff, rgba(185, 169, 255, 0) 70%);
+    top: -220px;
+    left: -160px;
+}
+.admin-shell .blob-2 {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, #9ed0ff, rgba(158, 208, 255, 0) 70%);
+    top: 40%;
+    right: -200px;
+}
+.admin-shell .blob-3 {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, #ffc5e6, rgba(255, 197, 230, 0) 70%);
+    bottom: -220px;
+    left: 20%;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 264px;
+    flex-shrink: 0;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(26px) saturate(180%);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    border-right: 1px solid rgba(255, 255, 255, 0.7);
+}
+@supports not (backdrop-filter: blur(1px)) {
+    .admin-sidebar {
+        background: rgba(255, 255, 255, 0.96);
+    }
+}
+
+.admin-logo {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.03em;
+}
+.admin-logo .muted {
+    color: var(--color-ink-3);
+    font-weight: 500;
+}
+.admin-logo-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, var(--color-purple), var(--color-blue));
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-ink-2);
+    transition:
+        background 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+.admin-nav-link:hover {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--color-ink);
+}
+.admin-nav-link.active {
+    background: linear-gradient(135deg, var(--color-purple), var(--color-blue));
+    color: #fff;
+    box-shadow: 0 10px 24px -12px rgba(122, 99, 255, 0.6);
+}
+.admin-nav-link .icon {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+/* Glass surfaces */
+.admin-card {
+    position: relative;
+    z-index: 1;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.68);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 18px 40px -26px rgba(40, 30, 90, 0.28);
+}
+@supports not (backdrop-filter: blur(1px)) {
+    .admin-card {
+        background: rgba(255, 255, 255, 0.96);
+    }
+}
+
+.admin-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(247, 248, 252, 0.75);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(15, 15, 25, 0.06);
+}
+
+.admin-eyebrow {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-purple-dark);
+}
+
+.admin-grad-text {
+    background: linear-gradient(110deg, #7a63ff, #4f9bff 50%, #e884c8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Pill buttons (mirrors the public site's .btn) */
+.admin-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 18px;
+    transition:
+        filter 0.15s ease,
+        transform 0.1s ease;
+    white-space: nowrap;
+}
+.admin-btn:active {
+    transform: scale(0.98);
+}
+.admin-btn-dark {
+    background: var(--color-ink);
+    color: #fff;
+}
+.admin-btn-dark:hover {
+    filter: brightness(1.15);
+}
+.admin-btn-glass {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    color: var(--color-ink);
+}
+.admin-btn-glass:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+.admin-btn-danger {
+    background: #fff0f0;
+    color: #d0392b;
+    border: 1px solid #ffd9d5;
+}
+.admin-btn-danger:hover {
+    background: #ffe4e1;
+}
+.admin-btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.admin-badge-success {
+    background: rgba(52, 199, 89, 0.14);
+    color: #1a8f3f;
+}
+.admin-badge-neutral {
+    background: rgba(15, 15, 25, 0.06);
+    color: var(--color-ink-2);
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(15, 15, 25, 0.1);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: var(--color-ink);
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+    outline: none;
+    border-color: var(--color-purple);
+    box-shadow: 0 0 0 3px rgba(139, 124, 255, 0.18);
+}
+
+.admin-table {
+    width: 100%;
+    font-size: 13.5px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.admin-table thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(15, 15, 25, 0.08);
+}
+.admin-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(15, 15, 25, 0.05);
+}
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.admin-table tbody tr {
+    transition: background 0.15s ease;
+}
+.admin-table tbody tr:hover {
+    background: rgba(139, 124, 255, 0.05);
+}
+
+.admin-switch {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    width: 36px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background: rgba(15, 15, 25, 0.12);
+    transition: background 0.15s ease;
+    cursor: pointer;
+}
+.admin-switch:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.admin-switch[data-state='checked'] {
+    background: linear-gradient(135deg, var(--color-purple), var(--color-blue));
+}
+
+.admin-drag-handle {
+    cursor: grab;
+    color: var(--color-ink-3);
+    touch-action: none;
+}
+.admin-drag-handle:active {
+    cursor: grabbing;
+}
+.admin-drag-row {
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+.admin-drag-row.dragging {
+    box-shadow: 0 20px 40px -20px rgba(40, 30, 90, 0.4);
+    background: #fff;
+    z-index: 5;
+    position: relative;
+}
+
+/* Toasts */
+.admin-toast-viewport {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+}
+.admin-toast {
+    border-radius: 14px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 16px 40px -18px rgba(30, 24, 70, 0.4);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: admin-toast-in 0.25s ease;
+}
+.admin-toast-success {
+    border-left: 3px solid var(--color-green);
+}
+.admin-toast-error {
+    border-left: 3px solid #e5484d;
+}
+@keyframes admin-toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-toast {
+        animation: none;
+    }
+}

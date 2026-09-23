@@ -14,6 +14,8 @@ use Inertia\Response;
 
 class HomeController extends Controller
 {
+    public const HOME_PORTFOLIO_LIMIT = 8;
+
     public function __invoke(): Response
     {
         $payload = Cache::remember(CacheInvalidator::PUBLIC_HOME_KEY, now()->addHour(), function () {
@@ -28,10 +30,11 @@ class HomeController extends Controller
                 // been observed to lose the class on unserialize and render as
                 // {"__PHP_Incomplete_Class_Name": ...} client-side. Plain
                 // arrays survive any serialize/json_encode path intact.
-                'portfolios' => Portfolio::published()->ordered()->get([
+                'portfolios' => Portfolio::published()->ordered()->limit(self::HOME_PORTFOLIO_LIMIT)->get([
                     'id', 'title', 'slug', 'platform', 'category', 'duration',
                     'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured',
                 ])->toArray(),
+                'portfolioTotal' => Portfolio::published()->count(),
                 'services' => Service::published()->ordered()->get(['number', 'title', 'description'])->toArray(),
                 'processSteps' => ProcessStep::published()->ordered()->get(['step_number', 'label', 'title', 'description'])->toArray(),
                 'faqs' => Faq::published()->ordered()->get(['id', 'question', 'answer', 'is_open_by_default'])->toArray(),

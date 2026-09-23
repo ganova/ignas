@@ -23,7 +23,10 @@ class SeoAssetsController extends Controller
     {
         $indexingEnabled = SiteSetting::indexingEnabled();
 
-        $urls = [['loc' => url('/'), 'lastmod' => now()->toAtomString()]];
+        $urls = [
+            ['loc' => url('/'), 'lastmod' => now()->toAtomString()],
+            ['loc' => route('portfolio.index'), 'lastmod' => now()->toAtomString()],
+        ];
 
         if ($indexingEnabled) {
             Portfolio::published()->ordered()->get(['slug', 'updated_at'])->each(function ($p) use (&$urls) {

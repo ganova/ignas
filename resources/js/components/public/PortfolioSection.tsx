@@ -1,111 +1,14 @@
 import { useMemo, useState } from 'react';
+import { Link } from '@inertiajs/react';
 import type { PortfolioItem } from '@/types/public';
+import PortfolioCard, { platformLabel } from '@/components/public/PortfolioCard';
 
 interface Props {
     portfolios: PortfolioItem[];
+    total: number;
 }
 
-const PLATFORM_LABELS: Record<PortfolioItem['platform'], string> = {
-    tiktok: 'TIKTOK',
-    instagram: 'IG REELS',
-    youtube: 'YOUTUBE',
-    commercial: 'COMMERCIAL',
-    other: 'OTHER',
-};
-
-function playIcon(size: number) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="#0D0D14" aria-hidden="true">
-            <path d="M8 5v14l11-7z" />
-        </svg>
-    );
-}
-
-function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) {
-    const platformLabel = PLATFORM_LABELS[item.platform] ?? item.platform.toUpperCase();
-    const hasLink = Boolean(item.external_url);
-
-    const media = (
-        <>
-            {item.thumbnail ? (
-                <img
-                    className="thumb-bg thumb-img"
-                    src={item.thumbnail}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                    width={360}
-                    height={520}
-                />
-            ) : (
-                <span
-                    className="thumb-bg"
-                    style={{ background: `linear-gradient(150deg,${item.gradient_from},${item.gradient_to})` }}
-                />
-            )}
-            <span className="thumb-scrim" aria-hidden="true" />
-            {item.is_featured && <span className="badge-featured">Featured</span>}
-            <span className="badge-platform">{platformLabel}</span>
-            {item.duration && <span className="badge-duration">{item.duration}</span>}
-
-            <span className="thumb-play">
-                <span>{playIcon(14)}</span>
-            </span>
-
-            <span className="thumb-overlay">
-                <span className="thumb-overlay-top">
-                    {item.views_label && <span className="thumb-stat">{item.views_label} views</span>}
-                    {item.duration && <span className="thumb-stat">{item.duration}</span>}
-                </span>
-                <span className="thumb-overlay-bottom">
-                    <b>{item.title}</b>
-                    <span className="thumb-overlay-meta">
-                        {platformLabel}
-                        {item.category ? ` · ${item.category}` : ''}
-                    </span>
-                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Details coming soon'}</span>
-                </span>
-            </span>
-        </>
-    );
-
-    return (
-        <article
-            className={`portfolio-card ${item.is_featured ? 'is-featured' : ''}`}
-            data-reveal
-            style={{ transitionDelay: `${(index % 4) * 60}ms` }}
-        >
-            {hasLink ? (
-                <a
-                    className="portfolio-thumb"
-                    href={item.external_url as string}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`View project ${item.title} (opens in new tab)`}
-                >
-                    {media}
-                </a>
-            ) : (
-                <div
-                    className="portfolio-thumb portfolio-thumb-static"
-                    aria-label={`${item.title} — link not available yet`}
-                >
-                    {media}
-                </div>
-            )}
-            <div className="portfolio-meta">
-                <h4>{item.title}</h4>
-                <p>
-                    {item.views_label && <b>{item.views_label} views</b>}
-                    {item.views_label && item.category ? ' · ' : ''}
-                    {item.category}
-                </p>
-            </div>
-        </article>
-    );
-}
-
-export default function PortfolioSection({ portfolios }: Props) {
+export default function PortfolioSection({ portfolios, total }: Props) {
     // Filter options are derived from the actual data, not a hard-coded list,
     // so a new platform used in the admin automatically appears as a filter.
     const platforms = useMemo(() => {
@@ -145,7 +48,7 @@ export default function PortfolioSection({ portfolios }: Props) {
                             aria-pressed={activeFilter === platform}
                             onClick={() => setActiveFilter(platform)}
                         >
-                            {PLATFORM_LABELS[platform as PortfolioItem['platform']] ?? platform}
+                            {platformLabel(platform)}
                         </button>
                     ))}
                 </div>
@@ -159,6 +62,18 @@ export default function PortfolioSection({ portfolios }: Props) {
                 ) : (
                     <div className="portfolio-empty" role="status">
                         No work in this category yet.
+                    </div>
+                )}
+
+                {total > 0 && (
+                    <div className="portfolio-more" data-reveal>
+                        <Link href="/portfolio" className="btn-archive">
+                            <span>View the full archive</span>
+                            <span className="btn-archive-count">{total}</span>
+                            <span className="btn-archive-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </Link>
                     </div>
                 )}
             </div>

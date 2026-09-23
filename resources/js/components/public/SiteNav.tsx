@@ -6,13 +6,17 @@ import { NAV_SECTIONS } from '@/lib/sections';
 interface Props {
     identity: SiteSettings['identity'];
     whatsappUrl: string;
+    /** Sub-pages link back to home sections instead of scrolling in place. */
+    currentPage?: 'home' | 'portfolio';
 }
 
-export default function SiteNav({ identity, whatsappUrl }: Props) {
+export default function SiteNav({ identity, whatsappUrl, currentPage = 'home' }: Props) {
+    const onHome = currentPage === 'home';
     const [boldPart, ...rest] = identity.logo_text.split('.');
     const mutedPart = rest.length ? '.' + rest.join('.') : '';
 
-    const activeId = useActiveSection();
+    const observedId = useActiveSection();
+    const activeId = onHome ? observedId : currentPage;
     const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -103,12 +107,14 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
     }, [menuOpen]);
 
     function handleNavClick(e: React.MouseEvent, id: string) {
+        if (!onHome) return;
         e.preventDefault();
         scrollToSection(id);
         setMenuOpen(false);
     }
 
     function handleLogoClick(e: React.MouseEvent) {
+        if (!onHome) return;
         e.preventDefault();
         scrollToSection('hero');
         setMenuOpen(false);
@@ -117,7 +123,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
     return (
         <nav className={`site-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
             <div className="nav-pill" ref={pillRef}>
-                <a className="nav-logo" href="#hero" onClick={handleLogoClick}>
+                <a className="nav-logo" href={onHome ? '#hero' : '/'} onClick={handleLogoClick}>
                     {boldPart}
                     <span className="muted">{mutedPart}</span>
                 </a>
@@ -139,7 +145,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
                                     linkRefs.current[section.id] = el;
                                 }}
                                 className={`nav-link ${isActive ? 'is-active' : ''}`}
-                                href={`#${section.id}`}
+                                href={onHome ? `#${section.id}` : `/#${section.id}`}
                                 aria-current={isActive ? 'location' : undefined}
                                 onClick={(e) => handleNavClick(e, section.id)}
                             >
@@ -189,7 +195,7 @@ export default function SiteNav({ identity, whatsappUrl }: Props) {
                             <a
                                 key={section.id}
                                 className={`nav-mobile-link ${isActive ? 'is-active' : ''}`}
-                                href={`#${section.id}`}
+                                href={onHome ? `#${section.id}` : `/#${section.id}`}
                                 aria-current={isActive ? 'location' : undefined}
                                 onClick={(e) => handleNavClick(e, section.id)}
                             >

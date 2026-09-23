@@ -18,7 +18,7 @@ export default function StickyWhatsapp({ text, whatsappUrl }: Props) {
             setPastHero(true);
             return;
         }
-        const observer = new IntersectionObserver(([entry]) => setPastHero(!entry.isIntersecting), {
+        const observer = new IntersectionObserver(([entry]) => setPastHero(!entry?.isIntersecting), {
             rootMargin: '-90% 0px 0px 0px',
         });
         observer.observe(hero);

@@ -15,7 +15,7 @@ import SiteFooter from '@/components/public/SiteFooter';
 import ScrollProgress from '@/components/public/ScrollProgress';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-export default function Home({ settings, whatsappUrl, portfolios, services, processSteps, faqs }: HomePageProps) {
+export default function Home({ settings, whatsappUrl, portfolios, portfolioTotal, services, processSteps, faqs }: HomePageProps) {
     const { identity, hero, showreel, contact, cta, visual, seo } = settings;
 
     useScrollReveal();
@@ -67,7 +67,7 @@ export default function Home({ settings, whatsappUrl, portfolios, services, proc
 
             <main id="main-content">
                 <Hero hero={hero} showreel={showreel} whatsappUrl={whatsappUrl} />
-                <PortfolioSection portfolios={portfolios} />
+                <PortfolioSection portfolios={portfolios} total={portfolioTotal} />
                 <ServicesSection services={services} />
                 <AboutSection identity={identity} processSteps={processSteps} />
                 <QnaSection faqs={faqs} />

@@ -5,6 +5,7 @@ import { scrollToSection } from '@/hooks/useActiveSection';
 interface Props {
     identity: SiteSettings['identity'];
     contact: SiteSettings['contact'];
+    onHome?: boolean;
 }
 
 const SOCIALS: { key: keyof SiteSettings['contact']; label: string }[] = [
@@ -14,7 +15,7 @@ const SOCIALS: { key: keyof SiteSettings['contact']; label: string }[] = [
     { key: 'tiktok', label: 'TikTok' },
 ];
 
-export default function SiteFooter({ identity, contact }: Props) {
+export default function SiteFooter({ identity, contact, onHome = true }: Props) {
     const socialLinks = SOCIALS.filter((s) => Boolean(contact[s.key]));
 
     return (
@@ -30,8 +31,9 @@ export default function SiteFooter({ identity, contact }: Props) {
                     {NAV_SECTIONS.map((section) => (
                         <a
                             key={section.id}
-                            href={`#${section.id}`}
+                            href={onHome ? `#${section.id}` : `/#${section.id}`}
                             onClick={(e) => {
+                                if (!onHome) return;
                                 e.preventDefault();
                                 scrollToSection(section.id);
                             }}

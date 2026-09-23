@@ -77,6 +77,8 @@ export interface PortfolioItem {
     gradient_to: string;
     external_url: string | null;
     is_featured?: boolean;
+    description?: string | null;
+    published_at?: string | null;
 }
 
 export interface ServiceItem {
@@ -103,7 +105,14 @@ export interface HomePageProps {
     settings: SiteSettings;
     whatsappUrl: string;
     portfolios: PortfolioItem[];
+    portfolioTotal: number;
     services: ServiceItem[];
     processSteps: ProcessStepItem[];
     faqs: FaqItem[];
+}
+
+export interface PortfolioPageProps {
+    settings: SiteSettings;
+    whatsappUrl: string;
+    portfolios: PortfolioItem[];
 }

@@ -10,6 +10,7 @@ import {
     Settings,
     Search,
     LogOut,
+    Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +23,7 @@ const NAV = [
     { href: '/admin/process', label: 'Proses', icon: ListChecks },
     { href: '/admin/faqs', label: 'QnA', icon: HelpCircle },
     { href: '/admin/media', label: 'Media', icon: Images },
+    { href: '/admin/messages', label: 'Pesan', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: Settings },
     { href: '/admin/seo', label: 'SEO', icon: Search },
 ];

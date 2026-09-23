@@ -11,6 +11,8 @@ export interface SiteSettings {
         copyright: string;
         location: string;
         logo_text: string;
+        bio_paragraph_1: string;
+        bio_paragraph_2: string;
     };
     hero: {
         availability_text: string;

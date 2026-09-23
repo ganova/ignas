@@ -56,6 +56,18 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                         <Field label="Logo text">
                             <Input value={data.identity.logo_text} onChange={(e) => set('identity', 'logo_text', e.target.value)} />
                         </Field>
+                        <Field label="About — paragraf 1">
+                            <Textarea
+                                value={data.identity.bio_paragraph_1}
+                                onChange={(e) => set('identity', 'bio_paragraph_1', e.target.value)}
+                            />
+                        </Field>
+                        <Field label="About — paragraf 2">
+                            <Textarea
+                                value={data.identity.bio_paragraph_2}
+                                onChange={(e) => set('identity', 'bio_paragraph_2', e.target.value)}
+                            />
+                        </Field>
                     </TabsContent>
 
                     <TabsContent value="hero" className="space-y-4">

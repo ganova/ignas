@@ -14,15 +14,9 @@ export default function AboutSection({ identity, processSteps }: Props) {
                         <div className="eyebrow" style={{ textAlign: 'left' }}>
                             About Me
                         </div>
-                        <h2 style={{ textAlign: 'left' }}>Hi, I'm {identity.owner_name}.</h2>
-                        <p className="about-lead">
-                            Six years living inside the timeline. I believe good editing shouldn't be noticed —
-                            viewers just realize they can't stop watching.
-                        </p>
-                        <p className="about-lead about-lead-2">
-                            My focus isn't just cutting and arranging clips — it's designing the pacing, rhythm,
-                            and retention moments that keep an audience watching until the end, then acting.
-                        </p>
+                        <h2 style={{ textAlign: 'left' }}>Hi, I&rsquo;m {identity.owner_name}.</h2>
+                        <p className="about-lead">{identity.bio_paragraph_1}</p>
+                        <p className="about-lead about-lead-2">{identity.bio_paragraph_2}</p>
                         {identity.location && <p className="about-location">📍 {identity.location}</p>}
                     </div>
 

@@ -1,5 +1,6 @@
 import type { SiteSettings } from '@/types/public';
 import { useMagnetic } from '@/hooks/useMagnetic';
+import ContactForm from './ContactForm';
 
 interface Props {
     cta: SiteSettings['cta'];
@@ -33,6 +34,12 @@ export default function CtaSection({ cta, whatsappUrl, email }: Props) {
                             </a>
                         )}
                     </div>
+
+                    <div className="cta-divider" role="separator">
+                        <span>or send a message directly</span>
+                    </div>
+
+                    <ContactForm />
                 </div>
             </div>
         </section>

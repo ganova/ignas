@@ -33,6 +33,8 @@ class SettingsController extends Controller
             'identity.copyright' => ['required', 'string', 'max:160'],
             'identity.location' => ['nullable', 'string', 'max:120'],
             'identity.logo_text' => ['required', 'string', 'max:60'],
+            'identity.bio_paragraph_1' => ['required', 'string', 'max:400'],
+            'identity.bio_paragraph_2' => ['required', 'string', 'max:400'],
 
             'hero' => ['required', 'array'],
             'hero.availability_text' => ['required', 'string', 'max:80'],

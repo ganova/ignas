@@ -6,8 +6,15 @@ interface Props {
 }
 
 export default function QnaSection({ faqs }: Props) {
-    const defaultOpen = faqs.find((f) => f.is_open_by_default)?.id ?? faqs[0]?.id ?? null;
+    // A question without a real answer isn't ready for visitors yet — showing
+    // a "coming soon" placeholder reads as an unfinished site, so it's held
+    // back here until an admin fills it in, rather than filtered server-side
+    // (the admin list still needs to show every question, answered or not).
+    const answered = faqs.filter((f) => f.answer && f.answer.trim().length > 0);
+    const defaultOpen = answered.find((f) => f.is_open_by_default)?.id ?? answered[0]?.id ?? null;
     const [openId, setOpenId] = useState<number | null>(defaultOpen);
+
+    if (answered.length === 0) return null;
 
     return (
         <section className="section" id="qna">
@@ -19,7 +26,7 @@ export default function QnaSection({ faqs }: Props) {
                 <div style={{ height: 28 }} />
 
                 <div className="qna-wrap" data-reveal>
-                    {faqs.map((faq) => {
+                    {answered.map((faq) => {
                         const isOpen = openId === faq.id;
                         const panelId = `qna-panel-${faq.id}`;
                         const buttonId = `qna-button-${faq.id}`;
@@ -50,11 +57,7 @@ export default function QnaSection({ faqs }: Props) {
                                 >
                                     <div className="qna-answer-inner">
                                         {/* Answer HTML is sanitized server-side (TextSanitizer) before storage. */}
-                                        <p
-                                            dangerouslySetInnerHTML={{
-                                                __html: faq.answer ?? 'Answer coming soon.',
-                                            }}
-                                        />
+                                        <p dangerouslySetInnerHTML={{ __html: faq.answer as string }} />
                                     </div>
                                 </div>
                             </div>

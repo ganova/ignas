@@ -22,11 +22,19 @@ class PortfolioSeeder extends Seeder
         ];
 
         foreach ($items as $i => $item) {
+            // Match on the plain slug, not generateUniqueSlug(): that helper
+            // is for admin-created portfolios and appends "-1", "-2", etc.
+            // when the base slug is taken. On a re-run it's always taken (by
+            // this seeder's own previous run), so it would return a
+            // never-matching slug here and attempt a duplicate INSERT instead
+            // of the intended UPDATE.
+            $slug = Str::slug($item['title']);
+
             Portfolio::updateOrCreate(
-                ['slug' => Portfolio::generateUniqueSlug($item['title'])],
+                ['slug' => $slug],
                 array_merge($item, [
                     'title' => $item['title'],
-                    'slug' => Str::slug($item['title']),
+                    'slug' => $slug,
                     'is_published' => true,
                     'is_featured' => $i < 2,
                     'published_at' => now()->subDays(8 - $i),

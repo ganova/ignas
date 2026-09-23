@@ -25,7 +25,14 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <!-- force="true" belt-and-suspenders: the actual fix for
+             app()->environment() reporting "local" during tests was removing
+             docker-compose.yml's hardcoded "APP_ENV=local" on the app
+             service, which PHP-FPM copied into $_SERVER ahead of Laravel's
+             own env loading, beating this override outright. See
+             TestCase::setUp()'s PreventRequestForgery workaround, which was
+             masking that same root cause. -->
+        <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>

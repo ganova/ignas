@@ -22,9 +22,14 @@ class FaqSeeder extends Seeder
         ];
 
         foreach ($items as $i => $item) {
+            // Matched on sort_order, not question: the question text has
+            // already been translated once (Indonesian -> English), and
+            // matching on it would silently create a second, duplicate row
+            // per FAQ instead of updating the existing one — the same class
+            // of bug fixed in PortfolioSeeder's slug matching.
             Faq::updateOrCreate(
-                ['question' => $item['question']],
-                array_merge($item, ['is_published' => true, 'sort_order' => $i])
+                ['sort_order' => $i],
+                array_merge($item, ['is_published' => true])
             );
         }
     }

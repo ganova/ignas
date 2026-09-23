@@ -9,8 +9,13 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
-    environment:
-      - APP_ENV=local
+    # APP_ENV is intentionally NOT set here: it used to be hardcoded to
+    # "local", which PHP-FPM copies into $_SERVER before Laravel's own env
+    # loading runs — and $_SERVER wins over phpunit.xml's <env APP_ENV=
+    # testing>, silently defeating app()->environment('testing') for every
+    # test run (see phpunit.xml). .env's APP_ENV=local still applies
+    # normally; only `php artisan test` (which forces APP_ENV=testing via
+    # phpunit.xml) needs this to be absent here.
     depends_on:
       - db
       - redis

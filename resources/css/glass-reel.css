@@ -31,13 +31,16 @@ img{max-width:100%;display:block}
 .scroll-progress-bar{height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--purple-dark),var(--blue));
  transform:scaleX(0);transition:transform .08s linear}
 
-/* scroll reveal system: elements are visible-by-default so a JS failure never hides content */
-[data-reveal]{opacity:0;transform:translateY(22px);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
-[data-reveal].in{opacity:1;transform:none}
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease}
-.reveal.in{opacity:1;transform:none}
+/* scroll reveal system: elements are visible-by-default (no ".js" class on
+   <html> yet, or JS failed entirely) so a JS failure never hides content.
+   The ".js" class is added synchronously in app.blade.php's <head>, before
+   first paint, so there is no flash of hidden content once JS is available. */
+.js [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
+.js [data-reveal].in{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease}
+.js .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
-  [data-reveal],.reveal{opacity:1 !important;transform:none !important;transition:none !important}
+  .js [data-reveal],.js .reveal{opacity:1 !important;transform:none !important;transition:none !important}
   html{scroll-behavior:auto}
   *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
 }
@@ -121,9 +124,9 @@ img{max-width:100%;display:block}
 
 /* hero */
 .hero{padding:126px 0 50px;text-align:center}
-.hero-stage{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
-.hero-stage.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.hero-stage{opacity:1;transform:none;transition:none}}
+.js .hero-stage{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.js .hero-stage.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .hero-stage{opacity:1;transform:none;transition:none}}
 .pill{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:999px;font-size:12.5px;
  font-weight:600;color:var(--ink2);background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.88);
  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);margin-bottom:22px}
@@ -286,6 +289,27 @@ img{max-width:100%;display:block}
 .cta-panel::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(139,124,255,.2),rgba(255,201,90,.18));z-index:-1}
 .cta-panel h2{margin-bottom:12px}
 .cta-panel p{color:var(--ink2);margin:0 auto 26px;max-width:400px;font-size:15.5px}
+
+.cta-divider{display:flex;align-items:center;gap:14px;max-width:420px;margin:34px auto 22px;
+ color:var(--ink3);font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.cta-divider::before,.cta-divider::after{content:"";flex:1;height:1px;background:rgba(13,13,20,.12)}
+
+.contact-form{max-width:420px;margin:0 auto;text-align:left}
+.contact-form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contact-field{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.contact-field label{font-size:12.5px;font-weight:700;color:var(--ink2)}
+.contact-field input,.contact-field textarea{
+ font:inherit;font-size:14.5px;padding:11px 14px;border-radius:14px;border:1px solid rgba(13,13,20,.12);
+ background:rgba(255,255,255,.7);color:var(--ink);resize:vertical;transition:border-color .2s,box-shadow .2s}
+.contact-field input:focus,.contact-field textarea:focus{
+ outline:none;border-color:var(--purple-dark);box-shadow:0 0 0 3px rgba(122,99,255,.16)}
+.contact-error{font-size:12px;color:#E0455A;font-weight:600}
+.contact-success{margin-top:14px;font-size:13.5px;font-weight:600;color:var(--green)}
+.contact-form .btn{width:100%;justify-content:center;margin-top:4px}
+
+@media (max-width:560px){
+  .contact-form-row{grid-template-columns:1fr}
+}
 
 /* sticky whatsapp bar */
 .wa-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:12px;

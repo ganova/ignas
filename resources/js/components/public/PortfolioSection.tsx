@@ -125,7 +125,7 @@ export default function PortfolioSection({ portfolios }: Props) {
                 </div>
                 <h2 data-reveal>Selected work.</h2>
                 <p className="sub" data-reveal>
-                    View counts below are pulled from each client's own account.
+                    View counts below are pulled from each client&apos;s own account.
                 </p>
 
                 <div className="filters" role="group" aria-label="Portfolio filter" data-reveal>

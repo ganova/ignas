@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
@@ -8,11 +9,16 @@ use App\Http\Controllers\Admin\ProcessStepController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SeoAssetsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 Route::get('/robots.txt', [SeoAssetsController::class, 'robots'])->name('seo.robots');
 Route::get('/sitemap.xml', [SeoAssetsController::class, 'sitemap'])->name('seo.sitemap');
@@ -53,6 +59,10 @@ Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('
 
     Route::get('seo', [SeoController::class, 'edit'])->name('seo.edit');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
+
+    Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
+    Route::patch('messages/{contactMessage}/read', [ContactMessageController::class, 'markRead'])->name('messages.read');
+    Route::delete('messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
 });
 
 require __DIR__.'/auth.php';

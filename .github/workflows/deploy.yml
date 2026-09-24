@@ -56,7 +56,7 @@ jobs:
             --exclude='storage/framework/views/*' ./ deploy-package/
           touch deploy-package/.deploy-ready
 
-      - name: Upload via FTPS
+      - name: Upload via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -64,11 +64,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_SERVER_DIR }}
           local-dir: ./deploy-package/
-          protocol: ftps
+          protocol: ftp
           port: 21
-          # The hosting provider's FTP certificate does not include the FTP hostname.
-          # Keep FTPS enabled while allowing that certificate mismatch.
-          security: loose
           exclude: |
             **/.git*/**
             **/.github/**

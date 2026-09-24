@@ -66,7 +66,9 @@ jobs:
           local-dir: ./deploy-package/
           protocol: ftps
           port: 21
-          security: strict
+          # The hosting provider's FTP certificate does not include the FTP hostname.
+          # Keep FTPS enabled while allowing that certificate mismatch.
+          security: loose
           exclude: |
             **/.git*/**
             **/.github/**

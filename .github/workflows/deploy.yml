@@ -56,7 +56,7 @@ jobs:
             --exclude='storage/framework/views/*' ./ deploy-package/
           touch deploy-package/.deploy-ready
 
-      - name: Upload via FTP
+      - name: Upload Laravel application via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -74,3 +74,15 @@ jobs:
             **/storage/framework/cache/**
             **/storage/framework/sessions/**
             **/storage/framework/views/**
+
+      - name: Upload public web root via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /public_html/
+          local-dir: ./deploy-package/public/
+          protocol: ftp
+          port: 21
+          state-name: .ftp-deploy-public-state.json

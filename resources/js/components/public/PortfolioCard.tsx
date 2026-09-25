@@ -51,9 +51,11 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
             <span className="badge-platform">{label}</span>
             {item.duration && <span className="badge-duration">{item.duration}</span>}
 
-            <span className="thumb-play">
-                <span>{playIcon(14)}</span>
-            </span>
+            {hasLink && (
+                <span className="thumb-play">
+                    <span>{playIcon(14)}</span>
+                </span>
+            )}
 
             <span className="thumb-overlay">
                 <span className="thumb-overlay-top">
@@ -66,7 +68,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
                         {label}
                         {item.category ? ` · ${item.category}` : ''}
                     </span>
-                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Details coming soon'}</span>
+                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Project details coming soon'}</span>
                 </span>
             </span>
         </>

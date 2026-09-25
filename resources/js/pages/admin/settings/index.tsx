@@ -234,24 +234,32 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                     </TabsContent>
 
                     <TabsContent value="portfolio" className="space-y-4">
-                        <Field label="Jumlah portfolio di homepage">
-                            <Input
-                                type="number"
-                                min={1}
-                                max={48}
-                                className="max-w-[140px]"
-                                value={data.portfolio?.home_limit ?? 8}
-                                onChange={(e) => set('portfolio', 'home_limit', Number(e.target.value))}
-                            />
-                            {errors['portfolio.home_limit' as keyof typeof errors] && (
-                                <p className="text-xs text-red-600">
-                                    {errors['portfolio.home_limit' as keyof typeof errors]}
-                                </p>
-                            )}
-                        </Field>
+                        {(
+                            [
+                                ['short_form_limit', 'Jumlah Short-Form di homepage (TikTok / IG Reels)', 12],
+                                ['long_form_limit', 'Jumlah Long-Form di homepage (YouTube, dll)', 6],
+                            ] as const
+                        ).map(([key, label, fallback]) => (
+                            <Field key={key} label={label}>
+                                <Input
+                                    type="number"
+                                    min={1}
+                                    max={48}
+                                    className="max-w-[140px]"
+                                    value={data.portfolio?.[key] ?? fallback}
+                                    onChange={(e) => set('portfolio', key, Number(e.target.value))}
+                                />
+                                {errors[`portfolio.${key}` as keyof typeof errors] && (
+                                    <p className="text-xs text-red-600">
+                                        {errors[`portfolio.${key}` as keyof typeof errors]}
+                                    </p>
+                                )}
+                            </Field>
+                        ))}
                         <p className="text-xs text-[var(--color-ink-3)]">
-                            Antara 1–48 item, sesuai urutan di halaman Portfolio. Sisanya tetap bisa dilihat lewat
-                            tombol &quot;View the full archive&quot; yang menuju halaman /portfolio.
+                            Masing-masing 1–48 item, sesuai urutan di halaman Portfolio. Short-Form tampil sebagai
+                            baris yang bisa di-scroll ke samping, jadi aman diisi banyak. Sisanya tetap bisa dilihat
+                            lewat tombol &quot;View the full archive&quot;.
                         </p>
                     </TabsContent>
 

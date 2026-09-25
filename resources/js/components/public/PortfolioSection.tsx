@@ -1,24 +1,100 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from '@inertiajs/react';
 import type { PortfolioItem } from '@/types/public';
-import PortfolioCard, { platformLabel } from '@/components/public/PortfolioCard';
+import PortfolioCard, { portfolioFormat } from '@/components/public/PortfolioCard';
+import PlatformIcon from '@/components/public/PlatformIcon';
 
 interface Props {
     portfolios: PortfolioItem[];
     total: number;
 }
 
+function Arrow({ dir }: { dir: 'prev' | 'next' }) {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+            <path d={dir === 'prev' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+}
+
+/**
+ * Horizontally scrolling row of vertical cards. Lets the short-form showcase
+ * grow to dozens of reels without turning the page into an endless grid.
+ */
+function ShortFormRail({ items }: { items: PortfolioItem[] }) {
+    const trackRef = useRef<HTMLDivElement | null>(null);
+    const [edges, setEdges] = useState({ start: true, end: false });
+
+    const update = useCallback(() => {
+        const el = trackRef.current;
+        if (!el) return;
+        setEdges({
+            start: el.scrollLeft <= 4,
+            end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+        });
+    }, []);
+
+    useEffect(() => {
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, [update, items.length]);
+
+    function scrollByPage(dir: 1 | -1) {
+        const el = trackRef.current;
+        if (!el) return;
+        el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: 'smooth' });
+    }
+
+    return (
+        <div className={`rail ${edges.start ? 'at-start' : ''} ${edges.end ? 'at-end' : ''}`}>
+            <div className="rail-track" ref={trackRef} onScroll={update} tabIndex={0} aria-label="Short-form videos">
+                {items.map((item, index) => (
+                    <PortfolioCard item={item} index={index} key={item.id} />
+                ))}
+            </div>
+            <button
+                type="button"
+                className="rail-arrow rail-arrow-prev"
+                aria-label="Scroll back"
+                onClick={() => scrollByPage(-1)}
+                disabled={edges.start}
+            >
+                <Arrow dir="prev" />
+            </button>
+            <button
+                type="button"
+                className="rail-arrow rail-arrow-next"
+                aria-label="Scroll forward"
+                onClick={() => scrollByPage(1)}
+                disabled={edges.end}
+            >
+                <Arrow dir="next" />
+            </button>
+        </div>
+    );
+}
+
+function FormatHeading({ title, note, icons, count }: { title: string; note: string; icons: string[]; count: number }) {
+    return (
+        <div className="format-head" data-reveal>
+            <div className="format-head-title">
+                <span className="format-head-icons" aria-hidden="true">
+                    {icons.map((p) => (
+                        <PlatformIcon key={p} platform={p} size={15} />
+                    ))}
+                </span>
+                <h3>{title}</h3>
+                <span className="format-head-count">{count}</span>
+            </div>
+            <p>{note}</p>
+        </div>
+    );
+}
+
 export default function PortfolioSection({ portfolios, total }: Props) {
-    // Filter options are derived from the actual data, not a hard-coded list,
-    // so a new platform used in the admin automatically appears as a filter.
-    const platforms = useMemo(() => {
-        const seen = new Set<string>();
-        return portfolios.map((p) => p.platform).filter((p) => (seen.has(p) ? false : (seen.add(p), true)));
-    }, [portfolios]);
-
-    const [activeFilter, setActiveFilter] = useState<string>('all');
-
-    const visible = activeFilter === 'all' ? portfolios : portfolios.filter((p) => p.platform === activeFilter);
+    const shortForm = portfolios.filter((p) => portfolioFormat(p.platform) === 'short');
+    const longForm = portfolios.filter((p) => portfolioFormat(p.platform) === 'long');
 
     return (
         <section className="section" id="portfolio">
@@ -31,37 +107,37 @@ export default function PortfolioSection({ portfolios, total }: Props) {
                     View counts below are pulled from each client&apos;s own account.
                 </p>
 
-                <div className="filters" role="group" aria-label="Portfolio filter" data-reveal>
-                    <button
-                        type="button"
-                        className="filter-pill"
-                        aria-pressed={activeFilter === 'all'}
-                        onClick={() => setActiveFilter('all')}
-                    >
-                        All
-                    </button>
-                    {platforms.map((platform) => (
-                        <button
-                            key={platform}
-                            type="button"
-                            className="filter-pill"
-                            aria-pressed={activeFilter === platform}
-                            onClick={() => setActiveFilter(platform)}
-                        >
-                            {platformLabel(platform)}
-                        </button>
-                    ))}
-                </div>
-
-                {visible.length > 0 ? (
-                    <div className="portfolio-grid" role="status" aria-live="polite">
-                        {visible.map((item, index) => (
-                            <PortfolioCard item={item} index={index} key={item.id} />
-                        ))}
-                    </div>
-                ) : (
+                {portfolios.length === 0 && (
                     <div className="portfolio-empty" role="status">
-                        No work in this category yet.
+                        New work is on the way.
+                    </div>
+                )}
+
+                {shortForm.length > 0 && (
+                    <div className="format-block">
+                        <FormatHeading
+                            title="Short-Form"
+                            note="Reels, TikToks & Shorts — built to stop the scroll."
+                            icons={['instagram', 'tiktok']}
+                            count={shortForm.length}
+                        />
+                        <ShortFormRail items={shortForm} />
+                    </div>
+                )}
+
+                {longForm.length > 0 && (
+                    <div className="format-block">
+                        <FormatHeading
+                            title="Long-Form"
+                            note="YouTube videos, commercials & films — paced to keep people watching."
+                            icons={['youtube']}
+                            count={longForm.length}
+                        />
+                        <div className="longform-grid">
+                            {longForm.map((item, index) => (
+                                <PortfolioCard item={item} index={index} key={item.id} />
+                            ))}
+                        </div>
                     </div>
                 )}
 

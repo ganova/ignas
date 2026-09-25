@@ -77,7 +77,8 @@ class SiteSetting extends Model
                 'blobs_enabled' => true,
             ],
             'portfolio' => [
-                'home_limit' => 8,
+                'short_form_limit' => 12,
+                'long_form_limit' => 6,
             ],
             'seo' => [
                 'default_site_title' => 'Ignas.studio — Video Editor & Motion Designer',

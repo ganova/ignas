@@ -2,17 +2,26 @@ import { useState } from 'react';
 import type { PortfolioItem } from '@/types/public';
 import { isVerticalPlatform, resolveVideoEmbed } from '@/lib/video-embed';
 import VideoLightbox from './VideoLightbox';
+import PlatformIcon from './PlatformIcon';
 
-export const PLATFORM_LABELS: Record<PortfolioItem['platform'], string> = {
-    tiktok: 'TIKTOK',
-    instagram: 'IG REELS',
-    youtube: 'YOUTUBE',
-    commercial: 'COMMERCIAL',
-    other: 'OTHER',
-};
+export type PortfolioFormat = 'short' | 'long';
 
+export function portfolioFormat(platform: string): PortfolioFormat {
+    return isVerticalPlatform(platform) ? 'short' : 'long';
+}
+
+/** Public label for a platform: its format, not the network name (the icon carries that). */
 export function platformLabel(platform: string): string {
-    return PLATFORM_LABELS[platform as PortfolioItem['platform']] ?? platform.toUpperCase();
+    return portfolioFormat(platform) === 'short' ? 'Short-Form' : 'Long-Form';
+}
+
+export function FormatBadge({ platform, className = 'badge-platform' }: { platform: string; className?: string }) {
+    return (
+        <span className={className}>
+            <PlatformIcon platform={platform} />
+            {platformLabel(platform)}
+        </span>
+    );
 }
 
 export function PortfolioMedia({ item }: { item: PortfolioItem }) {
@@ -55,7 +64,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
             <PortfolioMedia item={item} />
             <span className="thumb-scrim" aria-hidden="true" />
             {item.is_featured && <span className="badge-featured">Featured</span>}
-            <span className="badge-platform">{label}</span>
+            <FormatBadge platform={item.platform} />
             {item.duration && <span className="badge-duration">{item.duration}</span>}
 
             {hasLink && (
@@ -83,7 +92,8 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
 
     return (
         <article
-            className={`portfolio-card ${item.is_featured ? 'is-featured' : ''} ${origin ? 'is-launching' : ''}`}
+            className={`portfolio-card is-${portfolioFormat(item.platform)} ${item.is_featured ? 'is-featured' : ''}`}
+            data-launching={origin ? '' : undefined}
             data-reveal
             style={{ transitionDelay: `${(index % 4) * 60}ms` }}
         >

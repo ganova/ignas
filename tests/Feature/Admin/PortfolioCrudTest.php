@@ -19,6 +19,8 @@ it('creates a portfolio item with server-side validation', function () {
         'platform' => 'tiktok',
         'gradient_from' => '#B9A9FF',
         'gradient_to' => '#8FC2FF',
+        'video_source' => 'link',
+        'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     ])->assertRedirect('/admin/portfolio');
 
     $this->assertDatabaseHas('portfolios', ['title' => 'New Project', 'slug' => 'new-project']);
@@ -36,6 +38,8 @@ it('generates a unique slug when titles collide', function () {
         'platform' => 'tiktok',
         'gradient_from' => '#B9A9FF',
         'gradient_to' => '#8FC2FF',
+        'video_source' => 'link',
+        'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     ]);
 
     $this->assertDatabaseHas('portfolios', ['slug' => 'aurora-skincare-1']);
@@ -49,6 +53,8 @@ it('updates a portfolio item', function () {
         'platform' => $portfolio->platform,
         'gradient_from' => $portfolio->gradient_from,
         'gradient_to' => $portfolio->gradient_to,
+        'video_source' => 'link',
+        'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     ])->assertRedirect('/admin/portfolio');
 
     expect($portfolio->fresh()->title)->toBe('Updated Title');

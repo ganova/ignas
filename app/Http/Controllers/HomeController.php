@@ -15,16 +15,34 @@ use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public const HOME_PORTFOLIO_LIMIT = 8;
+    public const SHORT_FORM_LIMIT = 12;
+
+    public const LONG_FORM_LIMIT = 6;
 
     public const HOME_PORTFOLIO_MAX = 48;
+
+    private const PORTFOLIO_COLUMNS = [
+        'id', 'title', 'slug', 'platform', 'category', 'duration',
+        'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured', 'video_source', 'video_url', 'video_path',
+    ];
 
     public function __invoke(): Response
     {
         $payload = Cache::remember(CacheInvalidator::PUBLIC_HOME_KEY, now()->addHour(), function () {
             $settings = SiteSetting::allGroups();
             $settings['seo']['indexing_enabled'] = SiteSetting::indexingEnabled();
-            $homeLimit = max(1, min(self::HOME_PORTFOLIO_MAX, (int) ($settings['portfolio']['home_limit'] ?? self::HOME_PORTFOLIO_LIMIT)));
+            $shortLimit = $this->clampLimit($settings['portfolio']['short_form_limit'] ?? self::SHORT_FORM_LIMIT);
+            $longLimit = $this->clampLimit($settings['portfolio']['long_form_limit'] ?? self::LONG_FORM_LIMIT);
+
+            $portfolios = Portfolio::published()->shortForm()->ordered()->limit($shortLimit)->get(self::PORTFOLIO_COLUMNS)
+                ->concat(Portfolio::published()->longForm()->ordered()->limit($longLimit)->get(self::PORTFOLIO_COLUMNS))
+                ->map(function (Portfolio $portfolio): Portfolio {
+                    if ($portfolio->video_source === 'upload' && $portfolio->video_path) {
+                        $portfolio->video_url = Storage::disk('public')->url($portfolio->video_path);
+                    }
+
+                    return $portfolio;
+                });
 
             return [
                 'settings' => $settings,
@@ -34,16 +52,7 @@ class HomeController extends Controller
                 // been observed to lose the class on unserialize and render as
                 // {"__PHP_Incomplete_Class_Name": ...} client-side. Plain
                 // arrays survive any serialize/json_encode path intact.
-                'portfolios' => Portfolio::published()->ordered()->limit($homeLimit)->get([
-                    'id', 'title', 'slug', 'platform', 'category', 'duration',
-                    'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured', 'video_source', 'video_url', 'video_path',
-                ])->map(function (Portfolio $portfolio): Portfolio {
-                    if ($portfolio->video_source === 'upload' && $portfolio->video_path) {
-                        $portfolio->video_url = Storage::disk('public')->url($portfolio->video_path);
-                    }
-
-                    return $portfolio;
-                })->toArray(),
+                'portfolios' => $portfolios->values()->toArray(),
                 'portfolioTotal' => Portfolio::published()->count(),
                 'services' => Service::published()->ordered()->get(['number', 'title', 'description'])->toArray(),
                 'processSteps' => ProcessStep::published()->ordered()->get(['step_number', 'label', 'title', 'description'])->toArray(),
@@ -52,5 +61,10 @@ class HomeController extends Controller
         });
 
         return Inertia::render('public/home', $payload);
+    }
+
+    private function clampLimit(mixed $value): int
+    {
+        return max(1, min(self::HOME_PORTFOLIO_MAX, (int) $value));
     }
 }

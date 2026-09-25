@@ -20,6 +20,9 @@ class Portfolio extends Model
         'other' => 'Lainnya',
     ];
 
+    /** Vertical (9:16) platforms, shown as "Short-Form"; everything else is "Long-Form". */
+    public const SHORT_FORM_PLATFORMS = ['tiktok', 'instagram'];
+
     protected $fillable = [
         'title', 'slug', 'platform', 'category', 'duration', 'views_label',
         'description', 'thumbnail', 'poster', 'video_url', 'video_source', 'video_path', 'external_url',
@@ -38,6 +41,16 @@ class Portfolio extends Model
         return $query->where('is_published', true)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now());
+    }
+
+    public function scopeShortForm(Builder $query): Builder
+    {
+        return $query->whereIn('platform', self::SHORT_FORM_PLATFORMS);
+    }
+
+    public function scopeLongForm(Builder $query): Builder
+    {
+        return $query->whereNotIn('platform', self::SHORT_FORM_PLATFORMS);
     }
 
     public function scopeOrdered(Builder $query): Builder

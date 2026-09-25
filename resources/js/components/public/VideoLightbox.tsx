@@ -98,7 +98,12 @@ export default function VideoLightbox({
             ],
             { duration: CLOSE_MS, easing: EASE_CLOSE, fill: 'forwards' },
         );
-        anim.onfinish = onClose;
+        // Fallback: a backgrounded tab may never fire onfinish.
+        const fallback = window.setTimeout(onClose, CLOSE_MS + 150);
+        anim.onfinish = () => {
+            window.clearTimeout(fallback);
+            onClose();
+        };
     }, [closing, onClose, origin]);
 
     // Some embeds never fire a usable load event (e.g. blocked third-party

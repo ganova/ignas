@@ -75,7 +75,8 @@ class SettingsController extends Controller
             'cta.sticky_bar_text' => ['required', 'string', 'max:80'],
 
             'portfolio' => ['sometimes', 'array'],
-            'portfolio.home_limit' => ['required_with:portfolio', 'integer', 'min:1', 'max:'.HomeController::HOME_PORTFOLIO_MAX],
+            'portfolio.short_form_limit' => ['required_with:portfolio', 'integer', 'min:1', 'max:'.HomeController::HOME_PORTFOLIO_MAX],
+            'portfolio.long_form_limit' => ['required_with:portfolio', 'integer', 'min:1', 'max:'.HomeController::HOME_PORTFOLIO_MAX],
 
             'visual' => ['required', 'array'],
             'visual.accent_color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
@@ -88,8 +89,8 @@ class SettingsController extends Controller
         // per the design requirement that the showreel never autoplays.
         $validated['showreel']['autoplay'] = false;
 
-        if (isset($validated['portfolio']['home_limit'])) {
-            $validated['portfolio']['home_limit'] = (int) $validated['portfolio']['home_limit'];
+        if (isset($validated['portfolio'])) {
+            $validated['portfolio'] = array_map('intval', $validated['portfolio']);
         }
 
         foreach ($validated as $group => $value) {

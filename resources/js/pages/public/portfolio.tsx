@@ -8,7 +8,12 @@ import CtaSection from '@/components/public/CtaSection';
 import StickyWhatsapp from '@/components/public/StickyWhatsapp';
 import SiteFooter from '@/components/public/SiteFooter';
 import ScrollProgress from '@/components/public/ScrollProgress';
-import PortfolioCard, { PortfolioMedia, platformLabel } from '@/components/public/PortfolioCard';
+import PortfolioCard, {
+    FormatBadge,
+    PortfolioMedia,
+    portfolioFormat,
+    type PortfolioFormat,
+} from '@/components/public/PortfolioCard';
 import VideoLightbox from '@/components/public/VideoLightbox';
 import { isVerticalPlatform, resolveVideoEmbed } from '@/lib/video-embed';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -17,6 +22,8 @@ type ViewMode = 'grid' | 'index';
 
 const VIEW_STORAGE_KEY = 'portfolio-view';
 const SPOTLIGHT_LIMIT = 2;
+
+const FORMAT_LABELS: Record<PortfolioFormat, string> = { short: 'Short-Form', long: 'Long-Form' };
 
 function pad(n: number): string {
     return String(n).padStart(2, '0');
@@ -47,8 +54,8 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
                 {item.description && <p className="spotlight-desc">{item.description}</p>}
                 <dl className="spotlight-facts">
                     <div>
-                        <dt>Platform</dt>
-                        <dd>{platformLabel(item.platform)}</dd>
+                        <dt>Format</dt>
+                        <dd><FormatBadge platform={item.platform} className="format-inline" /></dd>
                     </div>
                     {item.category && (
                         <div>
@@ -79,7 +86,8 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
             <>
                 <button
                     type="button"
-                    className={`spotlight-card ${origin ? 'is-launching' : ''}`}
+                    className="spotlight-card"
+                    data-launching={origin ? '' : undefined}
                     data-reveal
                     aria-label={`Play video: ${item.title}`}
                     onClick={(e) => {
@@ -144,7 +152,7 @@ function IndexList({ items, numberOf }: { items: PortfolioItem[]; numberOf: (ite
             <div className="archive-index-head" aria-hidden="true">
                 <span>No.</span>
                 <span>Project</span>
-                <span>Platform</span>
+                <span>Format</span>
                 <span>Runtime</span>
                 <span>Views</span>
             </div>
@@ -157,7 +165,7 @@ function IndexList({ items, numberOf }: { items: PortfolioItem[]; numberOf: (ite
                                 <b>{item.title}</b>
                                 {item.category && <small>{item.category}</small>}
                             </span>
-                            <span className="ix-platform">{platformLabel(item.platform)}</span>
+                            <FormatBadge platform={item.platform} className="ix-platform format-inline" />
                             <span className="ix-runtime">{item.duration ?? '—'}</span>
                             <span className="ix-views">{item.views_label ?? '—'}</span>
                             <span className="ix-arrow" aria-hidden="true">
@@ -206,10 +214,15 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
 
     useScrollReveal();
 
-    const platforms = useMemo(() => {
-        const counts = new Map<string, number>();
-        portfolios.forEach((p) => counts.set(p.platform, (counts.get(p.platform) ?? 0) + 1));
-        return Array.from(counts.entries()).map(([platform, count]) => ({ platform, count }));
+    const formats = useMemo(() => {
+        const counts = new Map<PortfolioFormat, number>();
+        portfolios.forEach((p) => {
+            const f = portfolioFormat(p.platform);
+            counts.set(f, (counts.get(f) ?? 0) + 1);
+        });
+        return (['short', 'long'] as const)
+            .filter((f) => counts.has(f))
+            .map((format) => ({ format, count: counts.get(format) ?? 0 }));
     }, [portfolios]);
 
     const categoryCount = useMemo(
@@ -226,8 +239,8 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
     // Restored after mount (not in the initial state) so SSR and the first
     // client render agree.
     useEffect(() => {
-        const fromUrl = new URLSearchParams(window.location.search).get('platform');
-        if (fromUrl && portfolios.some((p) => p.platform === fromUrl)) {
+        const fromUrl = new URLSearchParams(window.location.search).get('format');
+        if (fromUrl && portfolios.some((p) => portfolioFormat(p.platform) === fromUrl)) {
             setFilter(fromUrl);
         }
         try {
@@ -242,9 +255,9 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
         setFilter(next);
         const url = new URL(window.location.href);
         if (next === 'all') {
-            url.searchParams.delete('platform');
+            url.searchParams.delete('format');
         } else {
-            url.searchParams.set('platform', next);
+            url.searchParams.set('format', next);
         }
         window.history.replaceState(window.history.state, '', url);
     }
@@ -258,16 +271,16 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
         }
     }
 
-    const filtered = filter === 'all' ? portfolios : portfolios.filter((p) => p.platform === filter);
+    const filtered = filter === 'all' ? portfolios : portfolios.filter((p) => portfolioFormat(p.platform) === filter);
     const spotlight =
         filter === 'all' && view === 'grid' ? portfolios.filter((p) => p.is_featured).slice(0, SPOTLIGHT_LIMIT) : [];
     const spotlightIds = new Set(spotlight.map((p) => p.id));
     const gridItems = filtered.filter((p) => !spotlightIds.has(p.id));
 
     const title = `Portfolio — ${identity.portfolio_name}`;
-    const description = `The complete archive of ${portfolios.length} video editing projects by ${identity.owner_name}: ${platforms
-        .map((p) => platformLabel(p.platform).toLowerCase())
-        .join(', ')} and more.`;
+    const description = `The complete archive of ${portfolios.length} video editing projects by ${identity.owner_name}: ${formats
+        .map((f) => FORMAT_LABELS[f.format].toLowerCase())
+        .join(' and ')} video.`;
     const canonicalUrl = typeof window !== 'undefined' ? window.location.origin + '/portfolio' : '/portfolio';
 
     const collectionSchema = {
@@ -332,8 +345,12 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
                             <dd>{pad(portfolios.length)}</dd>
                         </div>
                         <div>
-                            <dt>Platforms</dt>
-                            <dd>{pad(platforms.length)}</dd>
+                            <dt>Short-Form</dt>
+                            <dd>{pad(formats.find((f) => f.format === 'short')?.count ?? 0)}</dd>
+                        </div>
+                        <div>
+                            <dt>Long-Form</dt>
+                            <dd>{pad(formats.find((f) => f.format === 'long')?.count ?? 0)}</dd>
                         </div>
                         {categoryCount > 0 && (
                             <div>
@@ -366,7 +383,7 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
 
                         <div className="archive-toolbar">
                             <div className="wrap archive-toolbar-inner">
-                                <div className="filters archive-filters" role="group" aria-label="Filter by platform">
+                                <div className="filters archive-filters" role="group" aria-label="Filter by format">
                                     <button
                                         type="button"
                                         className="filter-pill"
@@ -375,15 +392,15 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
                                     >
                                         All <sup>{portfolios.length}</sup>
                                     </button>
-                                    {platforms.map(({ platform, count }) => (
+                                    {formats.map(({ format, count }) => (
                                         <button
-                                            key={platform}
+                                            key={format}
                                             type="button"
                                             className="filter-pill"
-                                            aria-pressed={filter === platform}
-                                            onClick={() => changeFilter(platform)}
+                                            aria-pressed={filter === format}
+                                            onClick={() => changeFilter(format)}
                                         >
-                                            {platformLabel(platform)} <sup>{count}</sup>
+                                            {FORMAT_LABELS[format]} <sup>{count}</sup>
                                         </button>
                                     ))}
                                 </div>
@@ -435,7 +452,7 @@ export default function PortfolioIndex({ settings, whatsappUrl, portfolios }: Po
                         <section className="archive-body wrap" aria-live="polite">
                             <p className="archive-count">
                                 Showing <b>{filtered.length}</b> of {portfolios.length} projects
-                                {filter !== 'all' && <> · {platformLabel(filter)}</>}
+                                {filter !== 'all' && <> · {FORMAT_LABELS[filter as PortfolioFormat]}</>}
                             </p>
 
                             {filtered.length === 0 ? (

@@ -50,7 +50,8 @@ export interface SiteSettings {
         sticky_bar_text: string;
     };
     portfolio: {
-        home_limit: number;
+        short_form_limit: number;
+        long_form_limit: number;
     };
     visual: {
         accent_color: string;

@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\SiteSetting;
 use App\Support\CacheInvalidator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,8 +33,14 @@ class HomeController extends Controller
                 // arrays survive any serialize/json_encode path intact.
                 'portfolios' => Portfolio::published()->ordered()->limit(self::HOME_PORTFOLIO_LIMIT)->get([
                     'id', 'title', 'slug', 'platform', 'category', 'duration',
-                    'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured',
-                ])->toArray(),
+                    'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured', 'video_source', 'video_url', 'video_path',
+                ])->map(function (Portfolio $portfolio): Portfolio {
+                    if ($portfolio->video_source === 'upload' && $portfolio->video_path) {
+                        $portfolio->video_url = Storage::disk('public')->url($portfolio->video_path);
+                    }
+
+                    return $portfolio;
+                })->toArray(),
                 'portfolioTotal' => Portfolio::published()->count(),
                 'services' => Service::published()->ordered()->get(['number', 'title', 'description'])->toArray(),
                 'processSteps' => ProcessStep::published()->ordered()->get(['step_number', 'label', 'title', 'description'])->toArray(),

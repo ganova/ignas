@@ -76,6 +76,9 @@ export interface PortfolioItem {
     gradient_from: string;
     gradient_to: string;
     external_url: string | null;
+    video_source?: 'link' | 'upload';
+    video_url?: string | null;
+    video_path?: string | null;
     is_featured?: boolean;
     description?: string | null;
     published_at?: string | null;

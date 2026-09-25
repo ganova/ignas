@@ -19,6 +19,8 @@ interface Portfolio {
     thumbnail: string | null;
     poster: string | null;
     video_url: string | null;
+    video_source: 'link' | 'upload';
+    video_path: string | null;
     external_url: string | null;
     gradient_from: string;
     gradient_to: string;
@@ -36,7 +38,7 @@ interface Props {
 export default function PortfolioForm({ portfolio, platforms }: Props) {
     const isEdit = !!portfolio;
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         title: portfolio?.title ?? '',
         slug: portfolio?.slug ?? '',
         platform: portfolio?.platform ?? Object.keys(platforms)[0],
@@ -47,6 +49,9 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
         thumbnail: portfolio?.thumbnail ?? '',
         poster: portfolio?.poster ?? '',
         video_url: portfolio?.video_url ?? '',
+        video_source: portfolio?.video_source ?? 'link',
+        video_file: null as File | null,
+        _method: isEdit ? 'put' : undefined,
         external_url: portfolio?.external_url ?? '',
         gradient_from: portfolio?.gradient_from ?? '#B9A9FF',
         gradient_to: portfolio?.gradient_to ?? '#8FC2FF',
@@ -59,9 +64,9 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
     function submit(e: React.FormEvent) {
         e.preventDefault();
         if (isEdit) {
-            put(`/admin/portfolio/${portfolio!.id}`);
+            post(`/admin/portfolio/${portfolio!.id}`, { forceFormData: true });
         } else {
-            post('/admin/portfolio');
+            post('/admin/portfolio', { forceFormData: true });
         }
     }
 
@@ -88,6 +93,39 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
                             <Input id="slug" value={data.slug} onChange={(e) => setData('slug', e.target.value)} />
                             {errors.slug && <p className="text-xs text-red-600">{errors.slug}</p>}
                         </div>
+                    </div>
+
+                    <div className="space-y-3 rounded-2xl border border-black/[0.06] bg-black/[0.02] p-4">
+                        <div>
+                            <Label>Sumber video</Label>
+                            <p className="mt-1 text-xs text-[var(--color-ink-3)]">Pilih link eksternal atau upload file ke hosting.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {(['link', 'upload'] as const).map((source) => (
+                                <button
+                                    key={source}
+                                    type="button"
+                                    className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${data.video_source === source ? 'border-[var(--color-purple)] bg-[var(--color-purple)]/10' : 'border-black/10'}`}
+                                    onClick={() => setData('video_source', source)}
+                                >
+                                    {source === 'link' ? 'Gunakan link' : 'Upload ke hosting'}
+                                </button>
+                            ))}
+                        </div>
+                        {data.video_source === 'link' ? (
+                            <div className="space-y-1.5">
+                                <Label htmlFor="video_url">URL video</Label>
+                                <Input id="video_url" placeholder="Google Drive, YouTube, Vimeo, atau MP4" value={data.video_url} onChange={(e) => setData('video_url', e.target.value)} />
+                                {errors.video_url && <p className="text-xs text-red-600">{errors.video_url}</p>}
+                            </div>
+                        ) : (
+                            <div className="space-y-1.5">
+                                <Label htmlFor="video_file">File video</Label>
+                                <Input id="video_file" type="file" accept="video/mp4,video/webm,video/quicktime" onChange={(e) => setData('video_file', e.target.files?.[0] ?? null)} />
+                                <p className="text-xs text-[var(--color-ink-3)]">MP4, WebM, atau MOV. Maksimum 150MB.</p>
+                                {errors.video_file && <p className="text-xs text-red-600">{errors.video_file}</p>}
+                            </div>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">

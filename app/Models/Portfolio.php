@@ -22,7 +22,7 @@ class Portfolio extends Model
 
     protected $fillable = [
         'title', 'slug', 'platform', 'category', 'duration', 'views_label',
-        'description', 'thumbnail', 'poster', 'video_url', 'external_url',
+        'description', 'thumbnail', 'poster', 'video_url', 'video_source', 'video_path', 'external_url',
         'gradient_from', 'gradient_to', 'is_featured', 'is_published',
         'published_at', 'sort_order', 'seo_title', 'seo_description',
     ];

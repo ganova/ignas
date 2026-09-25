@@ -41,7 +41,8 @@ function playIcon(size: number) {
 
 export default function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) {
     const label = platformLabel(item.platform);
-    const hasLink = Boolean(item.external_url);
+    const projectUrl = item.external_url ?? item.video_url ?? null;
+    const hasLink = Boolean(projectUrl);
 
     const media = (
         <>
@@ -83,7 +84,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
             {hasLink ? (
                 <a
                     className="portfolio-thumb"
-                    href={item.external_url as string}
+                    href={projectUrl as string}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`View project ${item.title} (opens in new tab)`}

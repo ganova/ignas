@@ -13,7 +13,7 @@ export default function ServicesSection({ services }: Props) {
                 </div>
                 <h2 data-reveal>What I can do for you.</h2>
                 <div style={{ height: 14 }} />
-                <div className="tiles" data-reveal>
+                <div className="tiles" data-reveal data-reveal-stagger>
                     {services.map((service, index) => (
                         <div
                             className="service-tile"

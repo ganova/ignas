@@ -35,12 +35,20 @@ img{max-width:100%;display:block}
    <html> yet, or JS failed entirely) so a JS failure never hides content.
    The ".js" class is added synchronously in app.blade.php's <head>, before
    first paint, so there is no flash of hidden content once JS is available. */
-.js [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
-.js [data-reveal].in{opacity:1;transform:none}
+.js [data-reveal]{opacity:0;transform:translateY(36px);filter:blur(6px);
+ transition:opacity .9s var(--ease-out),transform .9s var(--ease-out),filter .9s var(--ease-out)}
+.js [data-reveal].in{opacity:1;transform:none;filter:none}
+/* Stagger containers stay put; their direct children fade in one by one,
+   each using the transition-delay set inline on it. */
+.js [data-reveal][data-reveal-stagger]{opacity:1;transform:none;filter:none}
+.js [data-reveal-stagger] > *{opacity:0;transform:translateY(32px);
+ transition:opacity .8s var(--ease-out),transform .8s var(--ease-out),box-shadow var(--dur-base) var(--ease-out),background var(--dur-base) var(--ease-out)}
+.js [data-reveal-stagger].in > *{opacity:1;transform:none}
+.js [data-reveal-stagger].in > .step-card:hover{transform:translateY(-4px)}
 .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .4s ease}
 .js .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){
-  .js [data-reveal],.js .reveal{opacity:1 !important;transform:none !important;transition:none !important}
+  .js [data-reveal],.js .reveal,.js [data-reveal-stagger] > *{opacity:1 !important;transform:none !important;filter:none !important;transition:none !important}
   html{scroll-behavior:auto}
   *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
 }

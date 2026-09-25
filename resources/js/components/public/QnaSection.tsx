@@ -25,14 +25,18 @@ export default function QnaSection({ faqs }: Props) {
                 <h2 data-reveal>Questions I get a lot.</h2>
                 <div style={{ height: 28 }} />
 
-                <div className="qna-wrap" data-reveal>
-                    {answered.map((faq) => {
+                <div className="qna-wrap" data-reveal data-reveal-stagger>
+                    {answered.map((faq, index) => {
                         const isOpen = openId === faq.id;
                         const panelId = `qna-panel-${faq.id}`;
                         const buttonId = `qna-button-${faq.id}`;
 
                         return (
-                            <div className={`qna-item ${isOpen ? 'open' : ''}`} key={faq.id}>
+                            <div
+                                className={`qna-item ${isOpen ? 'open' : ''}`}
+                                key={faq.id}
+                                style={{ transitionDelay: `${index * 70}ms` }}
+                            >
                                 <h3 className="qna-heading">
                                     <button
                                         type="button"

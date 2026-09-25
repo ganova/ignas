@@ -35,7 +35,7 @@ export default function AboutSection({ identity, processSteps }: Props) {
                 <h2 data-reveal>Four steps, no drama.</h2>
                 <div style={{ height: 22 }} />
 
-                <div className="steps steps-timeline" data-reveal>
+                <div className="steps steps-timeline" data-reveal data-reveal-stagger>
                     {processSteps.map((step, index) => (
                         <div
                             className="step-card"

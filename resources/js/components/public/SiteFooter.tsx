@@ -20,7 +20,7 @@ export default function SiteFooter({ identity, contact, onHome = true }: Props) 
 
     return (
         <footer className="site-footer">
-            <div className="wrap footer-grid">
+            <div className="wrap footer-grid" data-reveal>
                 <div className="footer-brand">
                     <span className="footer-logo">{identity.logo_text}</span>
                     <p>{identity.profession}</p>

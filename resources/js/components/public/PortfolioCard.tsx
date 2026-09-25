@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { PortfolioItem } from '@/types/public';
-import { resolveVideoEmbed } from '@/lib/video-embed';
+import { isVerticalPlatform, resolveVideoEmbed } from '@/lib/video-embed';
 import VideoLightbox from './VideoLightbox';
 
 export const PLATFORM_LABELS: Record<PortfolioItem['platform'], string> = {
@@ -116,7 +116,12 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
             )}
 
             {embed && lightboxOpen && (
-                <VideoLightbox embed={embed} title={item.title} onClose={() => setLightboxOpen(false)} />
+                <VideoLightbox
+                    embed={embed}
+                    title={item.title}
+                    vertical={isVerticalPlatform(item.platform)}
+                    onClose={() => setLightboxOpen(false)}
+                />
             )}
             <div className="portfolio-meta">
                 <h4>{item.title}</h4>

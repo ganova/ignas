@@ -10,6 +10,10 @@ export interface ResolvedEmbed {
  * opened standalone — embedding that URL directly in an iframe just shows a
  * "refused to connect" wall, so it has to be rewritten to the /preview form.
  */
+export function isVerticalPlatform(platform: string): boolean {
+    return platform === 'tiktok' || platform === 'instagram';
+}
+
 export function resolveVideoEmbed(url: string | null | undefined): ResolvedEmbed | null {
     if (!url) return null;
 

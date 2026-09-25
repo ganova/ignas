@@ -10,7 +10,7 @@ import SiteFooter from '@/components/public/SiteFooter';
 import ScrollProgress from '@/components/public/ScrollProgress';
 import PortfolioCard, { PortfolioMedia, platformLabel } from '@/components/public/PortfolioCard';
 import VideoLightbox from '@/components/public/VideoLightbox';
-import { resolveVideoEmbed } from '@/lib/video-embed';
+import { isVerticalPlatform, resolveVideoEmbed } from '@/lib/video-embed';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 type ViewMode = 'grid' | 'index';
@@ -87,7 +87,12 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
                     {body}
                 </button>
                 {lightboxOpen && (
-                    <VideoLightbox embed={embed} title={item.title} onClose={() => setLightboxOpen(false)} />
+                    <VideoLightbox
+                        embed={embed}
+                        title={item.title}
+                        vertical={isVerticalPlatform(item.platform)}
+                        onClose={() => setLightboxOpen(false)}
+                    />
                 )}
             </>
         );

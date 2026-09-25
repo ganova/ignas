@@ -5,6 +5,7 @@ import type { ResolvedEmbed } from '@/lib/video-embed';
 interface Props {
     embed: ResolvedEmbed;
     title: string;
+    vertical?: boolean;
     onClose: () => void;
 }
 
@@ -16,7 +17,7 @@ interface Props {
  * lightbox mounted in place would be clipped to the card instead of
  * covering the screen.
  */
-export default function VideoLightbox({ embed, title, onClose }: Props) {
+export default function VideoLightbox({ embed, title, vertical = false, onClose }: Props) {
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -34,7 +35,7 @@ export default function VideoLightbox({ embed, title, onClose }: Props) {
     return createPortal(
         <div className="video-lightbox" role="dialog" aria-modal="true" aria-label={title}>
             <button type="button" className="video-lightbox-backdrop" aria-label="Close video" onClick={onClose} />
-            <div className="video-lightbox-panel">
+            <div className={`video-lightbox-panel ${vertical ? 'is-vertical' : ''}`}>
                 <button type="button" className="video-lightbox-close" aria-label="Close video" onClick={onClose}>
                     ×
                 </button>

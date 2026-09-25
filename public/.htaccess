@@ -8,6 +8,10 @@ DirectoryIndex index.php
 
     RewriteEngine On
 
+    # Always route the bare domain to Laravel. Some cPanel defaults or stale
+    # DirectoryIndex entries can otherwise win before the front controller.
+    RewriteRule ^$ index.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

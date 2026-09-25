@@ -13,6 +13,8 @@ import {
     Mail,
     BadgeCheck,
     Wrench,
+    Globe,
+    ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -75,6 +77,18 @@ export default function AdminLayout({ children }: PropsWithChildren) {
                     </span>
                     <span className="admin-logo-badge">Admin</span>
                 </div>
+
+                <a
+                    href="/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="admin-visit-site mx-3 mb-3"
+                    title="Buka website publik di tab baru"
+                >
+                    <Globe className="h-4 w-4" strokeWidth={2} />
+                    <span className="flex-1">Lihat Website</span>
+                    <ExternalLink className="h-3.5 w-3.5 opacity-60" strokeWidth={2} />
+                </a>
 
                 <nav className="flex-1 space-y-1 px-3">
                     {NAV.map((item) => {

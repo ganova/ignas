@@ -87,6 +87,28 @@
     border-radius: 999px;
 }
 
+.admin-visit-site {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-ink);
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(122, 99, 255, 0.28);
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+.admin-visit-site:hover {
+    border-color: var(--color-purple);
+    box-shadow: 0 10px 24px -14px rgba(122, 99, 255, 0.6);
+    transform: translateY(-1px);
+}
+
 .admin-nav-link {
     display: flex;
     align-items: center;

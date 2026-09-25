@@ -11,6 +11,8 @@ import {
     Search,
     LogOut,
     Mail,
+    BadgeCheck,
+    Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -22,6 +24,8 @@ const NAV = [
     { href: '/admin/services', label: 'Layanan', icon: Sparkles },
     { href: '/admin/process', label: 'Proses', icon: ListChecks },
     { href: '/admin/faqs', label: 'QnA', icon: HelpCircle },
+    { href: '/admin/brands', label: 'Brand Klien', icon: BadgeCheck },
+    { href: '/admin/tools', label: 'Software', icon: Wrench },
     { href: '/admin/media', label: 'Media', icon: Images },
     { href: '/admin/messages', label: 'Pesan', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: Settings },

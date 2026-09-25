@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
 use App\Models\Faq;
 use App\Models\Portfolio;
 use App\Models\ProcessStep;
 use App\Models\Service;
 use App\Models\SiteSetting;
+use App\Models\Tool;
 use App\Support\CacheInvalidator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -57,6 +60,15 @@ class HomeController extends Controller
                 'services' => Service::published()->ordered()->get(['number', 'title', 'description'])->toArray(),
                 'processSteps' => ProcessStep::published()->ordered()->get(['step_number', 'label', 'title', 'description'])->toArray(),
                 'faqs' => Faq::published()->ordered()->get(['id', 'question', 'answer', 'is_open_by_default'])->toArray(),
+                // The cPanel deploy uploads files over FTP and migrations run separately, so the
+                // new code can briefly be live before these tables exist; hide the sections then
+                // instead of taking the whole home page down.
+                'brands' => Schema::hasTable('brands')
+                    ? Brand::published()->ordered()->get(['id', 'name', 'logo', 'website_url'])->toArray()
+                    : [],
+                'tools' => Schema::hasTable('tools')
+                    ? Tool::published()->ordered()->get(['id', 'name', 'icon', 'category'])->toArray()
+                    : [],
             ];
         });
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Admin\ProcessStepController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PortfolioIndexController;
@@ -61,6 +63,19 @@ Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('
 
     Route::get('seo', [SeoController::class, 'edit'])->name('seo.edit');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');
+
+    // update uses POST (not PUT) because it carries an optional file upload as multipart/form-data.
+    Route::get('brands', [BrandController::class, 'index'])->name('brands.index');
+    Route::post('brands', [BrandController::class, 'store'])->name('brands.store');
+    Route::post('brands/reorder', [BrandController::class, 'reorder'])->name('brands.reorder');
+    Route::post('brands/{brand}', [BrandController::class, 'update'])->name('brands.update');
+    Route::delete('brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy');
+
+    Route::get('tools', [ToolController::class, 'index'])->name('tools.index');
+    Route::post('tools', [ToolController::class, 'store'])->name('tools.store');
+    Route::post('tools/reorder', [ToolController::class, 'reorder'])->name('tools.reorder');
+    Route::post('tools/{tool}', [ToolController::class, 'update'])->name('tools.update');
+    Route::delete('tools/{tool}', [ToolController::class, 'destroy'])->name('tools.destroy');
 
     Route::get('messages', [ContactMessageController::class, 'index'])->name('messages.index');
     Route::patch('messages/{contactMessage}/read', [ContactMessageController::class, 'markRead'])->name('messages.read');

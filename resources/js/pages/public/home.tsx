@@ -7,6 +7,8 @@ import SiteNav from '@/components/public/SiteNav';
 import Hero from '@/components/public/Hero';
 import PortfolioSection from '@/components/public/PortfolioSection';
 import ServicesSection from '@/components/public/ServicesSection';
+import BrandsSection from '@/components/public/BrandsSection';
+import ToolsSection from '@/components/public/ToolsSection';
 import AboutSection from '@/components/public/AboutSection';
 import QnaSection from '@/components/public/QnaSection';
 import CtaSection from '@/components/public/CtaSection';
@@ -15,7 +17,17 @@ import SiteFooter from '@/components/public/SiteFooter';
 import ScrollProgress from '@/components/public/ScrollProgress';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-export default function Home({ settings, whatsappUrl, portfolios, portfolioTotal, services, processSteps, faqs }: HomePageProps) {
+export default function Home({
+    settings,
+    whatsappUrl,
+    portfolios,
+    portfolioTotal,
+    services,
+    processSteps,
+    faqs,
+    brands = [],
+    tools = [],
+}: HomePageProps) {
     const { identity, hero, showreel, contact, cta, visual, seo } = settings;
 
     useScrollReveal();
@@ -68,7 +80,9 @@ export default function Home({ settings, whatsappUrl, portfolios, portfolioTotal
             <main id="main-content">
                 <Hero hero={hero} showreel={showreel} whatsappUrl={whatsappUrl} />
                 <PortfolioSection portfolios={portfolios} total={portfolioTotal} />
+                <BrandsSection brands={brands} />
                 <ServicesSection services={services} />
+                <ToolsSection tools={tools} />
                 <AboutSection identity={identity} processSteps={processSteps} />
                 <QnaSection faqs={faqs} />
                 <CtaSection cta={cta} whatsappUrl={whatsappUrl} email={contact.email} />

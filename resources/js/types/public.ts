@@ -108,6 +108,20 @@ export interface FaqItem {
     is_open_by_default: boolean;
 }
 
+export interface BrandItem {
+    id: number;
+    name: string;
+    logo_url: string | null;
+    website_url: string | null;
+}
+
+export interface ToolItem {
+    id: number;
+    name: string;
+    icon_url: string | null;
+    category: string | null;
+}
+
 export interface HomePageProps {
     settings: SiteSettings;
     whatsappUrl: string;
@@ -116,6 +130,8 @@ export interface HomePageProps {
     services: ServiceItem[];
     processSteps: ProcessStepItem[];
     faqs: FaqItem[];
+    brands: BrandItem[];
+    tools: ToolItem[];
 }
 
 export interface PortfolioPageProps {

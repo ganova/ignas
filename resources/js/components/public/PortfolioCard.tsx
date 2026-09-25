@@ -43,7 +43,7 @@ function playIcon(size: number) {
 }
 
 export default function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) {
-    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [origin, setOrigin] = useState<DOMRect | null>(null);
     const label = platformLabel(item.platform);
     const embed = resolveVideoEmbed(item.video_url);
     const projectUrl = item.external_url ?? item.video_url ?? null;
@@ -83,7 +83,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
 
     return (
         <article
-            className={`portfolio-card ${item.is_featured ? 'is-featured' : ''}`}
+            className={`portfolio-card ${item.is_featured ? 'is-featured' : ''} ${origin ? 'is-launching' : ''}`}
             data-reveal
             style={{ transitionDelay: `${(index % 4) * 60}ms` }}
         >
@@ -92,7 +92,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
                     type="button"
                     className="portfolio-thumb portfolio-thumb-video"
                     aria-label={`Play video: ${item.title}`}
-                    onClick={() => setLightboxOpen(true)}
+                    onClick={(e) => setOrigin(e.currentTarget.getBoundingClientRect())}
                 >
                     {media}
                 </button>
@@ -115,12 +115,15 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
                 </div>
             )}
 
-            {embed && lightboxOpen && (
+            {embed && origin && (
                 <VideoLightbox
                     embed={embed}
                     title={item.title}
                     vertical={isVerticalPlatform(item.platform)}
-                    onClose={() => setLightboxOpen(false)}
+                    origin={origin}
+                    posterImage={item.thumbnail}
+                    posterGradient={`linear-gradient(150deg,${item.gradient_from},${item.gradient_to})`}
+                    onClose={() => setOrigin(null)}
                 />
             )}
             <div className="portfolio-meta">

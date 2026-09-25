@@ -322,22 +322,72 @@ img{max-width:100%;display:block}
 }
 
 /* video lightbox */
-.video-lightbox{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:24px}
-.video-lightbox-backdrop{position:absolute;inset:0;border:none;padding:0;margin:0;background:rgba(8,6,20,.82);
- backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer}
-.video-lightbox-panel{position:relative;z-index:1;width:100%;max-width:900px;aspect-ratio:16/9;border-radius:20px;
- overflow:hidden;background:#000;box-shadow:0 40px 100px -30px rgba(0,0,0,.7)}
-.video-lightbox-panel.is-vertical{max-width:none;width:auto;height:min(86vh,900px);aspect-ratio:9/16}
+/* The clicked artwork "lifts off" the page while the player occupies the screen. */
+.portfolio-card.is-launching .portfolio-thumb,.spotlight-card.is-launching .spotlight-media{opacity:0;transition:opacity .2s}
+@property --lb-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+.video-lightbox{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:64px 24px}
+.video-lightbox-backdrop{position:absolute;inset:0;cursor:pointer;
+ background:radial-gradient(ellipse at 50% 55%,rgba(122,99,255,.38),rgba(79,155,255,.12) 38%,rgba(8,6,20,.92) 72%);
+ backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%)}
+
+.video-lightbox-stage{position:relative;z-index:1;width:100%;max-width:960px;aspect-ratio:16/9;border-radius:22px;
+ will-change:transform}
+.video-lightbox-stage.is-vertical{max-width:none;width:auto;height:min(82vh,880px);aspect-ratio:9/16}
+
+/* Rotating brand-gradient halo behind the player */
+.video-lightbox-glow{position:absolute;inset:-3px;border-radius:25px;z-index:0;
+ background:conic-gradient(from var(--lb-angle),#7A63FF,#4F9BFF,#E884C8,#F5A623,#7A63FF);
+ animation:lb-spin 5s linear infinite}
+.video-lightbox-glow::after{content:"";position:absolute;inset:-18px;border-radius:40px;background:inherit;
+ filter:blur(34px);opacity:.55;z-index:-1}
+@keyframes lb-spin{to{--lb-angle:360deg}}
+
+.video-lightbox-panel{position:absolute;inset:0;z-index:1;border-radius:22px;overflow:hidden;background:#07060f;
+ box-shadow:0 50px 120px -30px rgba(0,0,0,.8)}
 .video-lightbox-panel iframe,.video-lightbox-panel video{position:absolute;inset:0;width:100%;height:100%;border:none}
-.video-lightbox-close{position:absolute;top:-44px;right:0;z-index:2;width:36px;height:36px;border-radius:50%;
- border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;font-size:22px;line-height:1;
- display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
-.video-lightbox-close:hover{background:rgba(255,255,255,.22)}
+
+/* Card artwork stays on top while the embed boots, then dissolves away */
+.video-lightbox-poster{position:absolute;inset:0;z-index:2;background-size:cover;background-position:center;
+ display:flex;align-items:center;justify-content:center;
+ transition:opacity .7s var(--ease-out),transform .9s var(--ease-out),filter .7s var(--ease-out)}
+.video-lightbox-poster::before{content:"";position:absolute;inset:0;
+ background:linear-gradient(180deg,rgba(8,6,20,.15),rgba(8,6,20,.55))}
+.video-lightbox.is-ready .video-lightbox-poster{opacity:0;transform:scale(1.08);filter:blur(12px);pointer-events:none}
+.video-lightbox-loader{position:relative;display:flex;gap:7px;padding:14px 18px;border-radius:999px;
+ background:rgba(255,255,255,.18);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+ border:1px solid rgba(255,255,255,.35)}
+.video-lightbox-loader span{width:8px;height:8px;border-radius:50%;background:#fff;animation:lb-dot 1s ease-in-out infinite}
+.video-lightbox-loader span:nth-child(2){animation-delay:.15s}
+.video-lightbox-loader span:nth-child(3){animation-delay:.3s}
+@keyframes lb-dot{0%,100%{transform:translateY(0);opacity:.45}50%{transform:translateY(-6px);opacity:1}}
+
+.video-lightbox-title,.video-lightbox-close{position:fixed;z-index:3;animation:lb-chrome-in .6s var(--ease-out) .35s both}
+.video-lightbox-title{top:20px;left:24px;margin:0;display:flex;align-items:center;gap:10px;color:#fff;
+ font-size:14px;font-weight:700;letter-spacing:-.01em;max-width:calc(100vw - 110px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.video-lightbox-dot{width:8px;height:8px;border-radius:50%;background:#FF4D6D;box-shadow:0 0 0 0 rgba(255,77,109,.6);
+ animation:lb-live 1.6s ease-out infinite;flex:0 0 auto}
+@keyframes lb-live{to{box-shadow:0 0 0 10px rgba(255,77,109,0)}}
+.video-lightbox-close{top:14px;right:18px;width:42px;height:42px;border-radius:50%;
+ border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;font-size:24px;line-height:1;
+ backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+ display:flex;align-items:center;justify-content:center;cursor:pointer;
+ transition:background .2s,transform .35s var(--ease-spring)}
+.video-lightbox-close:hover{background:rgba(255,255,255,.26);transform:rotate(90deg)}
+@keyframes lb-chrome-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.video-lightbox.is-closing .video-lightbox-title,.video-lightbox.is-closing .video-lightbox-close{
+ animation:none;opacity:0;transition:opacity .15s}
 
 @media (max-width:640px){
   .video-lightbox{padding:0}
-  .video-lightbox-panel,.video-lightbox-panel.is-vertical{max-width:100%;width:100%;border-radius:0;aspect-ratio:auto;height:100%}
-  .video-lightbox-close{top:12px;right:12px}
+  .video-lightbox-stage,.video-lightbox-stage.is-vertical{max-width:100%;width:100%;height:100%;aspect-ratio:auto;border-radius:0}
+  .video-lightbox-panel{border-radius:0}
+  .video-lightbox-glow{display:none}
+  .video-lightbox-title{top:16px;left:16px}
+  .video-lightbox-close{top:10px;right:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  .video-lightbox-glow,.video-lightbox-loader span,.video-lightbox-dot{animation:none}
+  .video-lightbox-title,.video-lightbox-close{animation:none}
 }
 
 /* sticky whatsapp bar */

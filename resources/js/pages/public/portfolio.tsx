@@ -23,7 +23,7 @@ function pad(n: number): string {
 }
 
 function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }) {
-    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const [origin, setOrigin] = useState<DOMRect | null>(null);
     const embed = resolveVideoEmbed(item.video_url);
     const hasLink = Boolean(item.external_url) || Boolean(embed);
     const ctaLabel = embed ? 'Play video' : hasLink ? 'Watch the project ↗' : 'Case study coming soon';
@@ -79,19 +79,25 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
             <>
                 <button
                     type="button"
-                    className="spotlight-card"
+                    className={`spotlight-card ${origin ? 'is-launching' : ''}`}
                     data-reveal
                     aria-label={`Play video: ${item.title}`}
-                    onClick={() => setLightboxOpen(true)}
+                    onClick={(e) => {
+                        const media = e.currentTarget.querySelector('.spotlight-media') ?? e.currentTarget;
+                        setOrigin(media.getBoundingClientRect());
+                    }}
                 >
                     {body}
                 </button>
-                {lightboxOpen && (
+                {origin && (
                     <VideoLightbox
                         embed={embed}
                         title={item.title}
                         vertical={isVerticalPlatform(item.platform)}
-                        onClose={() => setLightboxOpen(false)}
+                        origin={origin}
+                        posterImage={item.thumbnail}
+                        posterGradient={`linear-gradient(150deg,${item.gradient_from},${item.gradient_to})`}
+                        onClose={() => setOrigin(null)}
                     />
                 )}
             </>

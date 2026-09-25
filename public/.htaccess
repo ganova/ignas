@@ -1,5 +1,6 @@
+DirectoryIndex index.php
+
 <IfModule mod_rewrite.c>
-    DirectoryIndex index.php
 
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

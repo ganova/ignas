@@ -86,3 +86,15 @@ jobs:
           protocol: ftp
           port: 21
           state-name: .ftp-deploy-public-state.json
+
+      - name: Verify production entry points
+        shell: bash
+        run: |
+          set -euo pipefail
+          for url in "https://ignatiusraditya.site/?deploy-check=${GITHUB_SHA}" "https://ignatiusraditya.site/portfolio?deploy-check=${GITHUB_SHA}"; do
+            body="$(curl --fail --silent --show-error --location --max-time 30 "$url")"
+            if ! grep -q "Ignas\|ignas" <<< "$body"; then
+              echo "Deploy check failed for $url: expected application content was not found."
+              exit 1
+            fi
+          done

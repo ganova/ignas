@@ -60,7 +60,7 @@ export default function Showreel({ showreel }: Props) {
                 </div>
             )}
             <span className="reel-cap">
-                {showreel.title} · {showreel.duration}
+                {hasVideo ? `${showreel.title} · ${showreel.duration}` : 'SHOWREEL · COMING SOON'}
             </span>
         </div>
     );

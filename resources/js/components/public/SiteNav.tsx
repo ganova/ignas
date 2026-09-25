@@ -155,14 +155,16 @@ export default function SiteNav({ identity, whatsappUrl, currentPage = 'home' }:
                     })}
                 </div>
 
-                <a
-                    className="nav-link nav-cta nav-cta-desktop"
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    WhatsApp
-                </a>
+                {whatsappUrl && (
+                    <a
+                        className="nav-link nav-cta nav-cta-desktop"
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        WhatsApp
+                    </a>
+                )}
 
                 <button
                     type="button"
@@ -204,9 +206,11 @@ export default function SiteNav({ identity, whatsappUrl, currentPage = 'home' }:
                         );
                     })}
                 </div>
-                <a className="nav-cta nav-mobile-cta" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                    Chat via WhatsApp
-                </a>
+                {whatsappUrl && (
+                    <a className="nav-cta nav-mobile-cta" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                        Chat via WhatsApp
+                    </a>
+                )}
             </div>
 
             {menuOpen && (

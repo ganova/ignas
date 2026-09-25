@@ -25,7 +25,7 @@ export default function StickyWhatsapp({ text, whatsappUrl }: Props) {
         return () => observer.disconnect();
     }, []);
 
-    if (dismissed || !pastHero) return null;
+    if (dismissed || !pastHero || !whatsappUrl) return null;
 
     return (
         <div className="wa-bar">

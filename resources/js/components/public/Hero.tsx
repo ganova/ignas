@@ -54,11 +54,10 @@ export default function Hero({ hero, showreel, whatsappUrl }: Props) {
                     <a
                         className="btn btn-dark btn-magnetic"
                         ref={primaryCtaRef}
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={whatsappUrl || '#cta'}
+                        {...(whatsappUrl ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                     >
-                        {hero.primary_button_label}
+                        {whatsappUrl ? hero.primary_button_label : 'Start a project'}
                     </a>
                     <a className="btn btn-glass btn-magnetic" ref={secondaryCtaRef} href="#reel">
                         {hero.showreel_button_label}

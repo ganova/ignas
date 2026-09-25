@@ -22,11 +22,10 @@ export default function CtaSection({ cta, whatsappUrl, email }: Props) {
                         <a
                             className="btn btn-dark btn-magnetic"
                             ref={whatsappRef}
-                            href={whatsappUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={whatsappUrl || '#contact-name'}
+                            {...(whatsappUrl ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                         >
-                            {cta.whatsapp_button_label} ↗
+                            {whatsappUrl ? `${cta.whatsapp_button_label} ↗` : 'Send a project brief'}
                         </a>
                         {email && (
                             <a className="btn btn-glass btn-magnetic" ref={emailRef} href={`mailto:${email}`}>

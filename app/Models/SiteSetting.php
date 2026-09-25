@@ -132,7 +132,7 @@ class SiteSetting extends Model
         $message = (string) ($contact['whatsapp_message'] ?? '');
 
         if ($number === '') {
-            return '#';
+            return '';
         }
 
         return 'https://wa.me/'.$number.'?text='.rawurlencode($message);

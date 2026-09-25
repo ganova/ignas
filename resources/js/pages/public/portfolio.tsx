@@ -9,6 +9,8 @@ import StickyWhatsapp from '@/components/public/StickyWhatsapp';
 import SiteFooter from '@/components/public/SiteFooter';
 import ScrollProgress from '@/components/public/ScrollProgress';
 import PortfolioCard, { PortfolioMedia, platformLabel } from '@/components/public/PortfolioCard';
+import VideoLightbox from '@/components/public/VideoLightbox';
+import { resolveVideoEmbed } from '@/lib/video-embed';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 type ViewMode = 'grid' | 'index';
@@ -21,7 +23,10 @@ function pad(n: number): string {
 }
 
 function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }) {
-    const hasLink = Boolean(item.external_url);
+    const [lightboxOpen, setLightboxOpen] = useState(false);
+    const embed = resolveVideoEmbed(item.video_url);
+    const hasLink = Boolean(item.external_url) || Boolean(embed);
+    const ctaLabel = embed ? 'Play video' : hasLink ? 'Watch the project ↗' : 'Case study coming soon';
     const body = (
         <>
             <div className="spotlight-media">
@@ -64,10 +69,29 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
                         </div>
                     )}
                 </dl>
-                <span className="spotlight-cta">{hasLink ? 'Watch the project ↗' : 'Case study coming soon'}</span>
+                <span className="spotlight-cta">{ctaLabel}</span>
             </div>
         </>
     );
+
+    if (embed) {
+        return (
+            <>
+                <button
+                    type="button"
+                    className="spotlight-card"
+                    data-reveal
+                    aria-label={`Play video: ${item.title}`}
+                    onClick={() => setLightboxOpen(true)}
+                >
+                    {body}
+                </button>
+                {lightboxOpen && (
+                    <VideoLightbox embed={embed} title={item.title} onClose={() => setLightboxOpen(false)} />
+                )}
+            </>
+        );
+    }
 
     return hasLink ? (
         <a

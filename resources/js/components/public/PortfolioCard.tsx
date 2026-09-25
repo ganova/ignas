@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import type { PortfolioItem } from '@/types/public';
+import { resolveVideoEmbed } from '@/lib/video-embed';
+import VideoLightbox from './VideoLightbox';
 
 export const PLATFORM_LABELS: Record<PortfolioItem['platform'], string> = {
     tiktok: 'TIKTOK',
@@ -40,9 +43,12 @@ function playIcon(size: number) {
 }
 
 export default function PortfolioCard({ item, index }: { item: PortfolioItem; index: number }) {
+    const [lightboxOpen, setLightboxOpen] = useState(false);
     const label = platformLabel(item.platform);
+    const embed = resolveVideoEmbed(item.video_url);
     const projectUrl = item.external_url ?? item.video_url ?? null;
     const hasLink = Boolean(projectUrl);
+    const ctaLabel = embed ? 'Play video' : hasLink ? 'Watch project ↗' : 'Project details coming soon';
 
     const media = (
         <>
@@ -69,7 +75,7 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
                         {label}
                         {item.category ? ` · ${item.category}` : ''}
                     </span>
-                    <span className="thumb-cta">{hasLink ? 'Watch project ↗' : 'Project details coming soon'}</span>
+                    <span className="thumb-cta">{ctaLabel}</span>
                 </span>
             </span>
         </>
@@ -81,7 +87,16 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
             data-reveal
             style={{ transitionDelay: `${(index % 4) * 60}ms` }}
         >
-            {hasLink ? (
+            {embed ? (
+                <button
+                    type="button"
+                    className="portfolio-thumb portfolio-thumb-video"
+                    aria-label={`Play video: ${item.title}`}
+                    onClick={() => setLightboxOpen(true)}
+                >
+                    {media}
+                </button>
+            ) : hasLink ? (
                 <a
                     className="portfolio-thumb"
                     href={projectUrl as string}
@@ -98,6 +113,10 @@ export default function PortfolioCard({ item, index }: { item: PortfolioItem; in
                 >
                     {media}
                 </div>
+            )}
+
+            {embed && lightboxOpen && (
+                <VideoLightbox embed={embed} title={item.title} onClose={() => setLightboxOpen(false)} />
             )}
             <div className="portfolio-meta">
                 <h4>{item.title}</h4>

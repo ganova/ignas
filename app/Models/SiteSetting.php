@@ -76,6 +76,9 @@ class SiteSetting extends Model
                 'grain_enabled' => true,
                 'blobs_enabled' => true,
             ],
+            'portfolio' => [
+                'home_limit' => 8,
+            ],
             'seo' => [
                 'default_site_title' => 'Ignas.studio — Video Editor & Motion Designer',
                 'title_template' => '%s · Ignas.studio',

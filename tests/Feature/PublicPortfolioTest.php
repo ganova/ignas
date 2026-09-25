@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\HomeController;
 use App\Models\Portfolio;
+use App\Models\SiteSetting;
+use App\Models\User;
 use App\Support\CacheInvalidator;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -30,6 +32,23 @@ it('limits the home page portfolio and exposes the full total', function () {
             ->has('portfolios', HomeController::HOME_PORTFOLIO_LIMIT)
             ->where('portfolioTotal', HomeController::HOME_PORTFOLIO_LIMIT + 3),
     );
+});
+
+it('uses the admin-configured home page portfolio count', function () {
+    Portfolio::factory()->count(10)->create(['is_published' => true, 'published_at' => now()]);
+    SiteSetting::putGroup('portfolio', ['home_limit' => 4]);
+    CacheInvalidator::publicContent();
+
+    $this->get('/')->assertInertia(fn (Assert $page) => $page->has('portfolios', 4));
+});
+
+it('rejects a home page portfolio count outside 1-48', function () {
+    $this->actingAs(User::factory()->create());
+
+    $settings = SiteSetting::allGroups();
+    $settings['portfolio']['home_limit'] = 0;
+
+    $this->put(route('admin.settings.update'), $settings)->assertSessionHasErrors('portfolio.home_limit');
 });
 
 it('clears the cached archive payload after a content update', function () {

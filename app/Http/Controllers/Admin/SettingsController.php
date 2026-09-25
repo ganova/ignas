@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HomeController;
 use App\Models\SiteSetting;
 use App\Support\CacheInvalidator;
 use Illuminate\Http\RedirectResponse;
@@ -73,6 +74,9 @@ class SettingsController extends Controller
             'cta.email_button_label' => ['required', 'string', 'max:40'],
             'cta.sticky_bar_text' => ['required', 'string', 'max:80'],
 
+            'portfolio' => ['sometimes', 'array'],
+            'portfolio.home_limit' => ['required_with:portfolio', 'integer', 'min:1', 'max:'.HomeController::HOME_PORTFOLIO_MAX],
+
             'visual' => ['required', 'array'],
             'visual.accent_color' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'visual.gradient' => ['required', 'string', 'max:255'],
@@ -83,6 +87,10 @@ class SettingsController extends Controller
         // Autoplay is force-disabled server-side regardless of admin input,
         // per the design requirement that the showreel never autoplays.
         $validated['showreel']['autoplay'] = false;
+
+        if (isset($validated['portfolio']['home_limit'])) {
+            $validated['portfolio']['home_limit'] = (int) $validated['portfolio']['home_limit'];
+        }
 
         foreach ($validated as $group => $value) {
             SiteSetting::putGroup($group, $value);

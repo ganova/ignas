@@ -49,6 +49,9 @@ export interface SiteSettings {
         email_button_label: string;
         sticky_bar_text: string;
     };
+    portfolio: {
+        home_limit: number;
+    };
     visual: {
         accent_color: string;
         gradient: string;

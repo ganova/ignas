@@ -17,11 +17,14 @@ class HomeController extends Controller
 {
     public const HOME_PORTFOLIO_LIMIT = 8;
 
+    public const HOME_PORTFOLIO_MAX = 48;
+
     public function __invoke(): Response
     {
         $payload = Cache::remember(CacheInvalidator::PUBLIC_HOME_KEY, now()->addHour(), function () {
             $settings = SiteSetting::allGroups();
             $settings['seo']['indexing_enabled'] = SiteSetting::indexingEnabled();
+            $homeLimit = max(1, min(self::HOME_PORTFOLIO_MAX, (int) ($settings['portfolio']['home_limit'] ?? self::HOME_PORTFOLIO_LIMIT)));
 
             return [
                 'settings' => $settings,
@@ -31,7 +34,7 @@ class HomeController extends Controller
                 // been observed to lose the class on unserialize and render as
                 // {"__PHP_Incomplete_Class_Name": ...} client-side. Plain
                 // arrays survive any serialize/json_encode path intact.
-                'portfolios' => Portfolio::published()->ordered()->limit(self::HOME_PORTFOLIO_LIMIT)->get([
+                'portfolios' => Portfolio::published()->ordered()->limit($homeLimit)->get([
                     'id', 'title', 'slug', 'platform', 'category', 'duration',
                     'views_label', 'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured', 'video_source', 'video_url', 'video_path',
                 ])->map(function (Portfolio $portfolio): Portfolio {

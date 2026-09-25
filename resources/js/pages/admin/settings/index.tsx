@@ -34,6 +34,7 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                         <TabsTrigger value="showreel">Showreel</TabsTrigger>
                         <TabsTrigger value="contact">Kontak</TabsTrigger>
                         <TabsTrigger value="cta">CTA</TabsTrigger>
+                        <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
                         <TabsTrigger value="visual">Visual</TabsTrigger>
                     </TabsList>
 
@@ -230,6 +231,28 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                 onChange={(e) => set('cta', 'sticky_bar_text', e.target.value)}
                             />
                         </Field>
+                    </TabsContent>
+
+                    <TabsContent value="portfolio" className="space-y-4">
+                        <Field label="Jumlah portfolio di homepage">
+                            <Input
+                                type="number"
+                                min={1}
+                                max={48}
+                                className="max-w-[140px]"
+                                value={data.portfolio?.home_limit ?? 8}
+                                onChange={(e) => set('portfolio', 'home_limit', Number(e.target.value))}
+                            />
+                            {errors['portfolio.home_limit' as keyof typeof errors] && (
+                                <p className="text-xs text-red-600">
+                                    {errors['portfolio.home_limit' as keyof typeof errors]}
+                                </p>
+                            )}
+                        </Field>
+                        <p className="text-xs text-[var(--color-ink-3)]">
+                            Antara 1–48 item, sesuai urutan di halaman Portfolio. Sisanya tetap bisa dilihat lewat
+                            tombol &quot;View the full archive&quot; yang menuju halaman /portfolio.
+                        </p>
                     </TabsContent>
 
                     <TabsContent value="visual" className="space-y-4">

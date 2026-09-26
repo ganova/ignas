@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
 use App\Support\CacheInvalidator;
+use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -74,6 +75,10 @@ class BrandController extends Controller
             $data['logo'] = $request->hasFile('logo_file')
                 ? $request->file('logo_file')->store('brand-logos', 'public')
                 : null;
+        }
+
+        if (! empty($data['logo'])) {
+            LogoImage::tidy($data['logo']);
         }
 
         $brand->fill($data)->save();

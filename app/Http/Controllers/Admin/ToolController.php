@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ToolRequest;
 use App\Models\Tool;
 use App\Support\CacheInvalidator;
+use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -74,6 +75,10 @@ class ToolController extends Controller
             $data['icon'] = $request->hasFile('icon_file')
                 ? $request->file('icon_file')->store('tool-icons', 'public')
                 : null;
+        }
+
+        if (! empty($data['icon'])) {
+            LogoImage::tidy($data['icon']);
         }
 
         $tool->fill($data)->save();

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Portfolio extends Model
@@ -56,6 +57,51 @@ class Portfolio extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order')->orderByDesc('published_at');
+    }
+
+    /**
+     * Cover image shown on cards: an uploaded thumbnail first, otherwise one
+     * derived from the video link (YouTube / Google Drive), otherwise null so
+     * the card falls back to the frame of an uploaded video or its gradient.
+     */
+    public function resolveThumbnailUrl(): ?string
+    {
+        if ($this->thumbnail) {
+            return Str::startsWith($this->thumbnail, ['http://', 'https://', '/'])
+                ? $this->thumbnail
+                : Storage::disk('public')->url($this->thumbnail);
+        }
+
+        return $this->video_source === 'link' ? self::thumbnailFromVideoUrl($this->video_url) : null;
+    }
+
+    public static function thumbnailFromVideoUrl(?string $url): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+
+        // Only works while the Drive file is shared as "Anyone with the link"; the card falls back otherwise.
+        if (preg_match('~drive\.google\.com/(?:file/d/|open\?id=)([\w-]+)~', $url, $m)) {
+            return "https://drive.google.com/thumbnail?id={$m[1]}&sz=w1000";
+        }
+
+        if (preg_match('~(?:youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([\w-]{11})~', $url, $m)) {
+            return "https://i.ytimg.com/vi/{$m[1]}/hqdefault.jpg";
+        }
+
+        return null;
+    }
+
+    /** Swap stored paths for the URLs the public pages render. */
+    public function presentForPublic(): self
+    {
+        if ($this->video_source === 'upload' && $this->video_path) {
+            $this->video_url = Storage::disk('public')->url($this->video_path);
+        }
+        $this->thumbnail = $this->resolveThumbnailUrl();
+
+        return $this;
     }
 
     public static function generateUniqueSlug(string $title, ?int $ignoreId = null): string

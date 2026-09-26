@@ -5,7 +5,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ImagePlus, Trash2 } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { autoThumbnailFromVideoUrl, isVerticalPlatform } from '@/lib/video-embed';
 
 interface Portfolio {
     id: number;
@@ -33,9 +35,10 @@ interface Portfolio {
 interface Props {
     portfolio?: Portfolio;
     platforms: Record<string, string>;
+    thumbnailUrl?: string | null;
 }
 
-export default function PortfolioForm({ portfolio, platforms }: Props) {
+export default function PortfolioForm({ portfolio, platforms, thumbnailUrl = null }: Props) {
     const isEdit = !!portfolio;
 
     const { data, setData, post, processing, errors } = useForm({
@@ -46,7 +49,8 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
         duration: portfolio?.duration ?? '',
         views_label: portfolio?.views_label ?? '',
         description: portfolio?.description ?? '',
-        thumbnail: portfolio?.thumbnail ?? '',
+        thumbnail_file: null as File | null,
+        remove_thumbnail: false,
         poster: portfolio?.poster ?? '',
         video_url: portfolio?.video_url ?? '',
         video_source: portfolio?.video_source ?? 'link',
@@ -227,10 +231,20 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
 
                 <div className="space-y-4">
                     <div className="admin-card p-4">
-                        <p className="mb-3 text-xs font-bold tracking-wide text-[var(--color-ink-3)] uppercase">Preview thumbnail</p>
-                        <div
-                            className="aspect-[9/13] w-full rounded-2xl"
-                            style={{ background: `linear-gradient(150deg,${data.gradient_from},${data.gradient_to})` }}
+                        <p className="mb-3 text-xs font-bold tracking-wide text-[var(--color-ink-3)] uppercase">Thumbnail / cover</p>
+                        <ThumbnailField
+                            file={data.thumbnail_file}
+                            uploadedUrl={portfolio?.thumbnail && !data.remove_thumbnail ? thumbnailUrl : null}
+                            autoUrl={data.video_source === 'link' ? autoThumbnailFromVideoUrl(data.video_url) : null}
+                            gradient={`linear-gradient(150deg,${data.gradient_from},${data.gradient_to})`}
+                            vertical={isVerticalPlatform(data.platform ?? "")}
+                            error={errors.thumbnail_file}
+                            onPick={(f) => {
+                                setData((d) => ({ ...d, thumbnail_file: f, remove_thumbnail: false }));
+                            }}
+                            onRemove={() => {
+                                setData((d) => ({ ...d, thumbnail_file: null, remove_thumbnail: true }));
+                            }}
                         />
                         <div className="mt-4 grid grid-cols-2 gap-3">
                             <div className="space-y-1.5">
@@ -262,5 +276,83 @@ export default function PortfolioForm({ portfolio, platforms }: Props) {
                 </div>
             </div>
         </AdminLayout>
+    );
+}
+
+function ThumbnailField({
+    file,
+    uploadedUrl,
+    autoUrl,
+    gradient,
+    vertical,
+    error,
+    onPick,
+    onRemove,
+}: {
+    file: File | null;
+    uploadedUrl: string | null;
+    autoUrl: string | null;
+    gradient: string;
+    vertical: boolean;
+    error?: string;
+    onPick: (file: File) => void;
+    onRemove: () => void;
+}) {
+    const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+    useEffect(() => () => {
+        if (fileUrl) URL.revokeObjectURL(fileUrl);
+    }, [fileUrl]);
+
+    const src = fileUrl ?? uploadedUrl ?? autoUrl;
+    const source = fileUrl || uploadedUrl ? 'upload' : autoUrl ? 'auto' : 'gradient';
+    const note = {
+        upload: 'Thumbnail yang di-upload.',
+        auto: 'Diambil otomatis dari link video. Untuk Google Drive, file harus di-share "Anyone with the link". Kalau tidak muncul, upload gambar sendiri.',
+        gradient: 'Belum ada thumbnail — kartu memakai gradient di bawah. Upload gambar, atau isi link YouTube/Google Drive untuk cover otomatis.',
+    }[source];
+
+    return (
+        <div>
+            <div
+                className={`relative w-full overflow-hidden rounded-2xl ${vertical ? 'aspect-[9/13]' : 'aspect-video'}`}
+                style={{ background: gradient }}
+            >
+                {src && (
+                    <img
+                        key={src}
+                        src={src}
+                        alt=""
+                        className="absolute inset-0 h-full w-full object-cover"
+                        onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                )}
+                <span className="absolute left-2 top-2 rounded-full bg-white/85 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-ink-2)]">
+                    {source === 'upload' ? 'Upload' : source === 'auto' ? 'Otomatis' : 'Gradient'}
+                </span>
+            </div>
+            <p className="mt-2 text-xs text-[var(--color-ink-3)]">{note}</p>
+            <div className="mt-3 flex gap-2">
+                <label className="admin-btn admin-btn-glass admin-btn-sm cursor-pointer">
+                    <ImagePlus className="h-4 w-4" /> {fileUrl || uploadedUrl ? 'Ganti gambar' : 'Upload thumbnail'}
+                    <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="sr-only"
+                        onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) onPick(f);
+                            e.target.value = '';
+                        }}
+                    />
+                </label>
+                {(fileUrl || uploadedUrl) && (
+                    <button type="button" className="admin-btn admin-btn-glass admin-btn-sm" onClick={onRemove}>
+                        <Trash2 className="h-4 w-4" /> Hapus
+                    </button>
+                )}
+            </div>
+            {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+            <p className="mt-2 text-[11px] text-[var(--color-ink-3)]">PNG, JPG, atau WebP, maks 5 MB.</p>
+        </div>
     );
 }

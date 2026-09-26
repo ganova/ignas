@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PortfolioRequest;
 use App\Models\Portfolio;
 use App\Support\CacheInvalidator;
+use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +30,12 @@ class PortfolioController extends Controller
             })
             ->ordered()
             ->paginate(15)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(function (Portfolio $portfolio): Portfolio {
+                $portfolio->thumbnail = $portfolio->resolveThumbnailUrl();
+
+                return $portfolio;
+            });
 
         return Inertia::render('admin/portfolio/index', [
             'portfolios' => $portfolios->toArray(),
@@ -51,6 +57,7 @@ class PortfolioController extends Controller
     {
         $data = $request->validated();
         $data = $this->prepareVideo($request, $data);
+        $data = $this->prepareThumbnail($request, $data);
         $data['slug'] = Portfolio::generateUniqueSlug($data['slug'] ?? $data['title']);
 
         Portfolio::create($data);
@@ -65,6 +72,7 @@ class PortfolioController extends Controller
 
         return Inertia::render('admin/portfolio/form', [
             'portfolio' => $portfolio,
+            'thumbnailUrl' => $portfolio->resolveThumbnailUrl(),
             'platforms' => Portfolio::PLATFORMS,
         ]);
     }
@@ -73,6 +81,7 @@ class PortfolioController extends Controller
     {
         $data = $request->validated();
         $data = $this->prepareVideo($request, $data, $portfolio);
+        $data = $this->prepareThumbnail($request, $data, $portfolio);
         $data['slug'] = Portfolio::generateUniqueSlug($data['slug'] ?? $data['title'], $portfolio->id);
 
         $portfolio->update($data);
@@ -101,6 +110,32 @@ class PortfolioController extends Controller
         }
 
         unset($data['video_file']);
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function prepareThumbnail(Request $request, array $data, ?Portfolio $portfolio = null): array
+    {
+        unset($data['thumbnail_file'], $data['remove_thumbnail']);
+
+        if (! $request->hasFile('thumbnail_file') && ! $request->boolean('remove_thumbnail')) {
+            return $data;
+        }
+
+        $old = $portfolio?->thumbnail;
+        if ($old && ! Str::startsWith($old, ['http://', 'https://', '/'])) {
+            Storage::disk('public')->delete($old);
+        }
+
+        $data['thumbnail'] = null;
+        if ($request->hasFile('thumbnail_file')) {
+            $data['thumbnail'] = $request->file('thumbnail_file')->store('portfolio-thumbnails', 'public');
+            LogoImage::downscale($data['thumbnail'], 1280);
+        }
 
         return $data;
     }

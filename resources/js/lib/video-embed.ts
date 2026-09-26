@@ -10,6 +10,16 @@ export interface ResolvedEmbed {
  * opened standalone — embedding that URL directly in an iframe just shows a
  * "refused to connect" wall, so it has to be rewritten to the /preview form.
  */
+/** Mirrors Portfolio::thumbnailFromVideoUrl() so the admin preview matches the site. */
+export function autoThumbnailFromVideoUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+    const drive = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
+    if (drive) return `https://drive.google.com/thumbnail?id=${drive[1]}&sz=w1000`;
+    const yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+    if (yt) return `https://i.ytimg.com/vi/${yt[1]}/hqdefault.jpg`;
+    return null;
+}
+
 export function isVerticalPlatform(platform: string): boolean {
     return platform === 'tiktok' || platform === 'instagram';
 }

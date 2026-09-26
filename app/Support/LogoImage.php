@@ -15,6 +15,22 @@ use Throwable;
  */
 class LogoImage
 {
+    /** Caps an uploaded image (e.g. a portfolio cover) so pages don't ship multi-MB photos. */
+    public static function downscale(string $path, int $max, string $disk = 'public'): void
+    {
+        if (! extension_loaded('gd')) {
+            return;
+        }
+
+        $fullPath = Storage::disk($disk)->path($path);
+
+        try {
+            (new ImageManager(new Driver))->decodePath($fullPath)->scaleDown(width: $max, height: $max)->save($fullPath);
+        } catch (Throwable $e) {
+            Log::warning('Image downscale skipped', ['path' => $path, 'error' => $e->getMessage()]);
+        }
+    }
+
     public static function tidy(string $path, string $disk = 'public'): void
     {
         if (! extension_loaded('gd')) {

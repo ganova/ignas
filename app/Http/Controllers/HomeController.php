@@ -12,7 +12,6 @@ use App\Models\Tool;
 use App\Support\CacheInvalidator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,13 +38,7 @@ class HomeController extends Controller
 
             $portfolios = Portfolio::published()->shortForm()->ordered()->limit($shortLimit)->get(self::PORTFOLIO_COLUMNS)
                 ->concat(Portfolio::published()->longForm()->ordered()->limit($longLimit)->get(self::PORTFOLIO_COLUMNS))
-                ->map(function (Portfolio $portfolio): Portfolio {
-                    if ($portfolio->video_source === 'upload' && $portfolio->video_path) {
-                        $portfolio->video_url = Storage::disk('public')->url($portfolio->video_path);
-                    }
-
-                    return $portfolio;
-                });
+                ->map(fn (Portfolio $portfolio): Portfolio => $portfolio->presentForPublic());
 
             return [
                 'settings' => $settings,

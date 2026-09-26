@@ -25,22 +25,52 @@ export function FormatBadge({ platform, className = 'badge-platform' }: { platfo
 }
 
 export function PortfolioMedia({ item }: { item: PortfolioItem }) {
-    return item.thumbnail ? (
-        <img
-            className="thumb-bg thumb-img"
-            src={item.thumbnail}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            width={360}
-            height={520}
-        />
-    ) : (
+    const [imageFailed, setImageFailed] = useState(false);
+    const gradient = (
         <span
             className="thumb-bg"
             style={{ background: `linear-gradient(150deg,${item.gradient_from},${item.gradient_to})` }}
         />
     );
+
+    if (item.thumbnail && !imageFailed) {
+        return (
+            <>
+                {gradient}
+                <img
+                    className="thumb-bg thumb-img"
+                    src={item.thumbnail}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width={360}
+                    height={520}
+                    referrerPolicy="no-referrer"
+                    onError={() => setImageFailed(true)}
+                />
+            </>
+        );
+    }
+
+    // No cover image: an uploaded video can show its own opening frame instead.
+    if (item.video_source === 'upload' && item.video_url) {
+        return (
+            <>
+                {gradient}
+                <video
+                    className="thumb-bg thumb-img"
+                    src={`${item.video_url}#t=0.5`}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                />
+            </>
+        );
+    }
+
+    return gradient;
 }
 
 function playIcon(size: number) {

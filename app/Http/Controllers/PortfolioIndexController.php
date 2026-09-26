@@ -6,7 +6,6 @@ use App\Models\Portfolio;
 use App\Models\SiteSetting;
 use App\Support\CacheInvalidator;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -24,13 +23,7 @@ class PortfolioIndexController extends Controller
                 'portfolios' => Portfolio::published()->ordered()->get([
                     'id', 'title', 'slug', 'platform', 'category', 'duration', 'views_label', 'description',
                     'thumbnail', 'gradient_from', 'gradient_to', 'external_url', 'is_featured', 'published_at', 'video_source', 'video_url', 'video_path',
-                ])->map(function (Portfolio $portfolio): Portfolio {
-                    if ($portfolio->video_source === 'upload' && $portfolio->video_path) {
-                        $portfolio->video_url = Storage::disk('public')->url($portfolio->video_path);
-                    }
-
-                    return $portfolio;
-                })->toArray(),
+                ])->map(fn (Portfolio $portfolio): Portfolio => $portfolio->presentForPublic())->toArray(),
             ];
         });
 

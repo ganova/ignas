@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PortfolioIndexController;
+use App\Http\Controllers\PublicFileController;
 use App\Http\Controllers\SeoAssetsController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::get('/portfolio', PortfolioIndexController::class)->name('portfolio.index
 Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
+
+Route::get('/storage/{path}', PublicFileController::class)->where('path', '.*')->name('storage.public');
 
 Route::get('/robots.txt', [SeoAssetsController::class, 'robots'])->name('seo.robots');
 Route::get('/sitemap.xml', [SeoAssetsController::class, 'sitemap'])->name('seo.sitemap');

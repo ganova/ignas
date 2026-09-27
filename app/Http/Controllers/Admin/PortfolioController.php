@@ -60,6 +60,7 @@ class PortfolioController extends Controller
         $data = $request->validated();
         $data = $this->prepareVideo($request, $data);
         $data = $this->prepareThumbnail($request, $data);
+        $data = $this->preparePublication($data);
         $data['slug'] = Portfolio::generateUniqueSlug($data['slug'] ?? $data['title']);
 
         Portfolio::create($data);
@@ -85,6 +86,7 @@ class PortfolioController extends Controller
         $data = $request->validated();
         $data = $this->prepareVideo($request, $data, $portfolio);
         $data = $this->prepareThumbnail($request, $data, $portfolio);
+        $data = $this->preparePublication($data, $portfolio);
         $data['slug'] = Portfolio::generateUniqueSlug($data['slug'] ?? $data['title'], $portfolio->id);
 
         $portfolio->update($data);
@@ -138,6 +140,19 @@ class PortfolioController extends Controller
         if ($request->hasFile('thumbnail_file')) {
             $data['thumbnail'] = $request->file('thumbnail_file')->store('portfolio-thumbnails', 'public');
             LogoImage::downscale($data['thumbnail'], 1280);
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function preparePublication(array $data, ?Portfolio $portfolio = null): array
+    {
+        if (($data['is_published'] ?? false) && empty($data['published_at'])) {
+            $data['published_at'] = $portfolio?->published_at ?? now();
         }
 
         return $data;

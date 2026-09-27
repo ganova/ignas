@@ -26,6 +26,23 @@ it('creates a portfolio item with server-side validation', function () {
     $this->assertDatabaseHas('portfolios', ['title' => 'New Project', 'slug' => 'new-project']);
 });
 
+it('sets the publication time when creating a published portfolio item', function () {
+    $this->post('/admin/portfolio', [
+        'title' => 'Published Project',
+        'platform' => 'youtube',
+        'gradient_from' => '#B9A9FF',
+        'gradient_to' => '#8FC2FF',
+        'video_source' => 'link',
+        'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        'is_published' => true,
+    ])->assertRedirect('/admin/portfolio');
+
+    $portfolio = Portfolio::where('title', 'Published Project')->firstOrFail();
+
+    expect($portfolio->is_published)->toBeTrue()
+        ->and($portfolio->published_at)->not->toBeNull();
+});
+
 it('rejects a portfolio without a title', function () {
     $this->post('/admin/portfolio', ['platform' => 'tiktok'])->assertSessionHasErrors('title');
 });
@@ -58,6 +75,26 @@ it('updates a portfolio item', function () {
     ])->assertRedirect('/admin/portfolio');
 
     expect($portfolio->fresh()->title)->toBe('Updated Title');
+});
+
+it('sets the publication time when publishing through the edit form', function () {
+    $portfolio = Portfolio::factory()->create([
+        'is_published' => false,
+        'published_at' => null,
+    ]);
+
+    $this->put("/admin/portfolio/{$portfolio->id}", [
+        'title' => $portfolio->title,
+        'platform' => $portfolio->platform,
+        'gradient_from' => $portfolio->gradient_from,
+        'gradient_to' => $portfolio->gradient_to,
+        'video_source' => 'link',
+        'video_url' => 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        'is_published' => true,
+    ])->assertRedirect('/admin/portfolio');
+
+    expect($portfolio->fresh()->is_published)->toBeTrue()
+        ->and($portfolio->fresh()->published_at)->not->toBeNull();
 });
 
 it('soft deletes a portfolio item and can restore it', function () {

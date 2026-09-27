@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,22 +40,40 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
 
                     <TabsContent value="identity" className="space-y-4">
                         <Field label="Nama portfolio">
-                            <Input value={data.identity.portfolio_name} onChange={(e) => set('identity', 'portfolio_name', e.target.value)} />
+                            <Input
+                                value={data.identity.portfolio_name}
+                                onChange={(e) => set('identity', 'portfolio_name', e.target.value)}
+                            />
                         </Field>
                         <Field label="Nama pemilik">
-                            <Input value={data.identity.owner_name} onChange={(e) => set('identity', 'owner_name', e.target.value)} />
+                            <Input
+                                value={data.identity.owner_name}
+                                onChange={(e) => set('identity', 'owner_name', e.target.value)}
+                            />
                         </Field>
                         <Field label="Profesi">
-                            <Input value={data.identity.profession} onChange={(e) => set('identity', 'profession', e.target.value)} />
+                            <Input
+                                value={data.identity.profession}
+                                onChange={(e) => set('identity', 'profession', e.target.value)}
+                            />
                         </Field>
                         <Field label="Copyright">
-                            <Input value={data.identity.copyright} onChange={(e) => set('identity', 'copyright', e.target.value)} />
+                            <Input
+                                value={data.identity.copyright}
+                                onChange={(e) => set('identity', 'copyright', e.target.value)}
+                            />
                         </Field>
                         <Field label="Lokasi">
-                            <Input value={data.identity.location} onChange={(e) => set('identity', 'location', e.target.value)} />
+                            <Input
+                                value={data.identity.location}
+                                onChange={(e) => set('identity', 'location', e.target.value)}
+                            />
                         </Field>
                         <Field label="Logo text">
-                            <Input value={data.identity.logo_text} onChange={(e) => set('identity', 'logo_text', e.target.value)} />
+                            <Input
+                                value={data.identity.logo_text}
+                                onChange={(e) => set('identity', 'logo_text', e.target.value)}
+                            />
                         </Field>
                         <Field label="About — paragraf 1">
                             <Textarea
@@ -68,6 +86,54 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                 value={data.identity.bio_paragraph_2}
                                 onChange={(e) => set('identity', 'bio_paragraph_2', e.target.value)}
                             />
+                        </Field>
+                        <Field label="Foto profil About Me">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="h-28 w-24 overflow-hidden rounded-2xl border border-black/10 bg-white/60">
+                                    {data.identity.portrait ? (
+                                        <img
+                                            src={data.identity.portrait}
+                                            alt="Preview foto profil"
+                                            className="h-full w-full object-cover"
+                                        />
+                                    ) : (
+                                        <span className="flex h-full items-center justify-center text-2xl font-bold text-[var(--color-ink-3)]">
+                                            {data.identity.owner_name.charAt(0)}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex flex-col items-start gap-2">
+                                    <label className="admin-btn admin-btn-glass admin-btn-sm cursor-pointer">
+                                        Upload foto
+                                        <input
+                                            type="file"
+                                            className="sr-only"
+                                            accept="image/png,image/jpeg,image/webp,image/avif"
+                                            onChange={(event) => {
+                                                const file = event.target.files?.[0];
+                                                if (file)
+                                                    router.post(
+                                                        '/admin/settings/portrait',
+                                                        { portrait_file: file },
+                                                        { forceFormData: true },
+                                                    );
+                                            }}
+                                        />
+                                    </label>
+                                    {data.identity.portrait && (
+                                        <button
+                                            type="button"
+                                            className="text-xs font-semibold text-red-600 underline"
+                                            onClick={() => router.delete('/admin/settings/portrait')}
+                                        >
+                                            Hapus foto
+                                        </button>
+                                    )}
+                                    <p className="text-xs text-[var(--color-ink-3)]">
+                                        JPG, PNG, WebP, atau AVIF. Maksimum 10MB.
+                                    </p>
+                                </div>
+                            </div>
                         </Field>
                     </TabsContent>
 
@@ -101,7 +167,10 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             />
                         </Field>
                         <Field label="Deskripsi">
-                            <Textarea value={data.hero.description} onChange={(e) => set('hero', 'description', e.target.value)} />
+                            <Textarea
+                                value={data.hero.description}
+                                onChange={(e) => set('hero', 'description', e.target.value)}
+                            />
                         </Field>
                         <Field label="Label tombol utama">
                             <Input
@@ -153,10 +222,16 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             Autoplay selalu nonaktif secara paksa oleh server, sesuai ketentuan desain.
                         </p>
                         <Field label="Judul">
-                            <Input value={data.showreel.title} onChange={(e) => set('showreel', 'title', e.target.value)} />
+                            <Input
+                                value={data.showreel.title}
+                                onChange={(e) => set('showreel', 'title', e.target.value)}
+                            />
                         </Field>
                         <Field label="Durasi">
-                            <Input value={data.showreel.duration} onChange={(e) => set('showreel', 'duration', e.target.value)} />
+                            <Input
+                                value={data.showreel.duration}
+                                onChange={(e) => set('showreel', 'duration', e.target.value)}
+                            />
                         </Field>
                         <Field label="Video URL">
                             <Input
@@ -164,7 +239,9 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                 onChange={(e) => set('showreel', 'video_url', e.target.value)}
                             />
                             {errors['showreel.video_url' as keyof typeof errors] && (
-                                <p className="text-xs text-red-600">{errors['showreel.video_url' as keyof typeof errors]}</p>
+                                <p className="text-xs text-red-600">
+                                    {errors['showreel.video_url' as keyof typeof errors]}
+                                </p>
                             )}
                         </Field>
                         <Field label="Poster URL">
@@ -190,19 +267,34 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             />
                         </Field>
                         <Field label="Email">
-                            <Input value={data.contact.email} onChange={(e) => set('contact', 'email', e.target.value)} />
+                            <Input
+                                value={data.contact.email}
+                                onChange={(e) => set('contact', 'email', e.target.value)}
+                            />
                         </Field>
                         <Field label="Instagram">
-                            <Input value={data.contact.instagram} onChange={(e) => set('contact', 'instagram', e.target.value)} />
+                            <Input
+                                value={data.contact.instagram}
+                                onChange={(e) => set('contact', 'instagram', e.target.value)}
+                            />
                         </Field>
                         <Field label="YouTube">
-                            <Input value={data.contact.youtube} onChange={(e) => set('contact', 'youtube', e.target.value)} />
+                            <Input
+                                value={data.contact.youtube}
+                                onChange={(e) => set('contact', 'youtube', e.target.value)}
+                            />
                         </Field>
                         <Field label="Behance">
-                            <Input value={data.contact.behance} onChange={(e) => set('contact', 'behance', e.target.value)} />
+                            <Input
+                                value={data.contact.behance}
+                                onChange={(e) => set('contact', 'behance', e.target.value)}
+                            />
                         </Field>
                         <Field label="TikTok">
-                            <Input value={data.contact.tiktok} onChange={(e) => set('contact', 'tiktok', e.target.value)} />
+                            <Input
+                                value={data.contact.tiktok}
+                                onChange={(e) => set('contact', 'tiktok', e.target.value)}
+                            />
                         </Field>
                     </TabsContent>
 
@@ -211,7 +303,10 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             <Input value={data.cta.heading} onChange={(e) => set('cta', 'heading', e.target.value)} />
                         </Field>
                         <Field label="Deskripsi">
-                            <Textarea value={data.cta.description} onChange={(e) => set('cta', 'description', e.target.value)} />
+                            <Textarea
+                                value={data.cta.description}
+                                onChange={(e) => set('cta', 'description', e.target.value)}
+                            />
                         </Field>
                         <Field label="Label tombol WhatsApp">
                             <Input
@@ -257,9 +352,9 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             </Field>
                         ))}
                         <p className="text-xs text-[var(--color-ink-3)]">
-                            Masing-masing 1–48 item, sesuai urutan di halaman Portfolio. Short-Form tampil sebagai
-                            baris yang bisa di-scroll ke samping, jadi aman diisi banyak. Sisanya tetap bisa dilihat
-                            lewat tombol &quot;View the full archive&quot;.
+                            Masing-masing 1–48 item, sesuai urutan di halaman Portfolio. Short-Form tampil sebagai baris
+                            yang bisa di-scroll ke samping, jadi aman diisi banyak. Sisanya tetap bisa dilihat lewat
+                            tombol &quot;View the full archive&quot;.
                         </p>
                     </TabsContent>
 
@@ -272,7 +367,10 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                             />
                         </Field>
                         <label className="flex items-center gap-2 text-sm">
-                            <Switch checked={data.visual.grain_enabled} onCheckedChange={(v) => set('visual', 'grain_enabled', v)} />
+                            <Switch
+                                checked={data.visual.grain_enabled}
+                                onCheckedChange={(v) => set('visual', 'grain_enabled', v)}
+                            />
                             Grain aktif
                         </label>
                         <label className="flex items-center gap-2 text-sm">

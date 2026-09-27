@@ -29,6 +29,7 @@ class SiteSetting extends Model
                 'logo_text' => 'Ignas.studio',
                 'bio_paragraph_1' => "Six years living inside the timeline. I believe good editing shouldn't be noticed — viewers just realize they can't stop watching.",
                 'bio_paragraph_2' => "My focus isn't just cutting and arranging clips — it's designing the pacing, rhythm, and retention moments that keep an audience watching until the end, then acting.",
+                'portrait' => null,
             ],
             'hero' => [
                 'availability_text' => '2 slots left this month',

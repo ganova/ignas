@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DocumentationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\PortfolioCategoryController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\ProcessStepController;
@@ -69,8 +70,16 @@ Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('
     Route::put('media/{media}', [MediaController::class, 'update'])->name('media.update');
     Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
 
+    Route::get('photos', [PhotoController::class, 'index'])->name('photos.index');
+    Route::post('photos', [PhotoController::class, 'store'])->name('photos.store');
+    Route::post('photos/reorder', [PhotoController::class, 'reorder'])->name('photos.reorder');
+    Route::post('photos/{photo}', [PhotoController::class, 'update'])->name('photos.update');
+    Route::delete('photos/{photo}', [PhotoController::class, 'destroy'])->name('photos.destroy');
+
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('settings/portrait', [SettingsController::class, 'updatePortrait'])->name('settings.portrait.update');
+    Route::delete('settings/portrait', [SettingsController::class, 'destroyPortrait'])->name('settings.portrait.destroy');
 
     Route::get('seo', [SeoController::class, 'edit'])->name('seo.edit');
     Route::put('seo', [SeoController::class, 'update'])->name('seo.update');

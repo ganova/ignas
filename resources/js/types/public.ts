@@ -13,6 +13,7 @@ export interface SiteSettings {
         logo_text: string;
         bio_paragraph_1: string;
         bio_paragraph_2: string;
+        portrait: string | null;
     };
     hero: {
         availability_text: string;
@@ -122,6 +123,14 @@ export interface ToolItem {
     category: string | null;
 }
 
+export interface PhotoItem {
+    id: number;
+    title: string;
+    image_url: string;
+    alt_text: string | null;
+    caption: string | null;
+}
+
 export interface HomePageProps {
     settings: SiteSettings;
     whatsappUrl: string;
@@ -132,6 +141,7 @@ export interface HomePageProps {
     faqs: FaqItem[];
     brands: BrandItem[];
     tools: ToolItem[];
+    photos: PhotoItem[];
 }
 
 export interface PortfolioPageProps {

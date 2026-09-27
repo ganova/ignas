@@ -6,6 +6,7 @@ import ScrollTicks from '@/components/public/ScrollTicks';
 import SiteNav from '@/components/public/SiteNav';
 import Hero from '@/components/public/Hero';
 import PortfolioSection from '@/components/public/PortfolioSection';
+import PhotoGallerySection from '@/components/public/PhotoGallerySection';
 import ServicesSection from '@/components/public/ServicesSection';
 import BrandsSection from '@/components/public/BrandsSection';
 import ToolsSection from '@/components/public/ToolsSection';
@@ -27,6 +28,7 @@ export default function Home({
     faqs,
     brands = [],
     tools = [],
+    photos = [],
 }: HomePageProps) {
     const { identity, hero, showreel, contact, cta, visual, seo } = settings;
 
@@ -80,6 +82,7 @@ export default function Home({
             <main id="main-content">
                 <Hero hero={hero} showreel={showreel} whatsappUrl={whatsappUrl} />
                 <PortfolioSection portfolios={portfolios} total={portfolioTotal} />
+                <PhotoGallerySection photos={photos} />
                 <BrandsSection brands={brands} />
                 <ServicesSection services={services} />
                 <ToolsSection tools={tools} />

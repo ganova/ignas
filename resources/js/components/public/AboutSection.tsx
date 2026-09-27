@@ -22,9 +22,18 @@ export default function AboutSection({ identity, processSteps }: Props) {
 
                     <div className="about-portrait" data-reveal>
                         <div className="about-portrait-frame">
-                            <span className="about-portrait-fallback" aria-hidden="true">
-                                {identity.owner_name.charAt(0)}
-                            </span>
+                            {identity.portrait ? (
+                                <img
+                                    src={identity.portrait}
+                                    alt={`${identity.owner_name}, ${identity.profession}`}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            ) : (
+                                <span className="about-portrait-fallback" aria-hidden="true">
+                                    {identity.owner_name.charAt(0)}
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>

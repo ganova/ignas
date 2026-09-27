@@ -26,6 +26,7 @@ const NAV = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/portfolio', label: 'Portfolio', icon: ImageIcon },
     { href: '/admin/portfolio-categories', label: 'Kategori Portfolio', icon: Tags },
+    { href: '/admin/photos', label: 'Galeri Foto', icon: Images },
     { href: '/admin/services', label: 'Layanan', icon: Sparkles },
     { href: '/admin/process', label: 'Proses', icon: ListChecks },
     { href: '/admin/faqs', label: 'QnA', icon: HelpCircle },
@@ -96,18 +97,15 @@ export default function AdminLayout({ children }: PropsWithChildren) {
 
                 <nav className="flex-1 space-y-1 px-3">
                     {NAV.map((item) => {
-                        const active = item.href === '/admin'
-                            ? url === '/admin'
-                            : item.href === '/admin/portfolio'
-                              ? url.startsWith('/admin/portfolio') && !url.startsWith('/admin/portfolio-categories')
-                              : url.startsWith(item.href);
+                        const active =
+                            item.href === '/admin'
+                                ? url === '/admin'
+                                : item.href === '/admin/portfolio'
+                                  ? url.startsWith('/admin/portfolio') && !url.startsWith('/admin/portfolio-categories')
+                                  : url.startsWith(item.href);
                         const Icon = item.icon;
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={cn('admin-nav-link', active && 'active')}
-                            >
+                            <Link key={item.href} href={item.href} className={cn('admin-nav-link', active && 'active')}>
                                 <Icon className="icon" strokeWidth={2} />
                                 {item.label}
                             </Link>
@@ -115,7 +113,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
                     })}
                 </nav>
 
-                <div className="mx-3 mb-4 mt-4 border-t border-black/[0.06] pt-4">
+                <div className="mx-3 mt-4 mb-4 border-t border-black/[0.06] pt-4">
                     <div className="flex items-center gap-2 px-2">
                         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#8B7CFF] to-[#5AA9FF] text-xs font-bold text-white">
                             {initials}
@@ -124,9 +122,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
                             <p className="truncate text-xs font-semibold text-[var(--color-ink)]">
                                 {props.auth.user?.name}
                             </p>
-                            <p className="truncate text-[11px] text-[var(--color-ink-3)]">
-                                {props.auth.user?.email}
-                            </p>
+                            <p className="truncate text-[11px] text-[var(--color-ink-3)]">{props.auth.user?.email}</p>
                         </div>
                         <button
                             onClick={() => router.post('/admin/logout')}

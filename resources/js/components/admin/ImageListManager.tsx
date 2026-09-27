@@ -24,6 +24,7 @@ interface Config {
     extraField: string;
     labels: { item: string; image: string; extra: string; extraPlaceholder: string; namePlaceholder: string };
     extraType?: 'url' | 'text';
+    allowRemove?: boolean;
 }
 
 type FormValues = Record<string, string | boolean | File | null>;
@@ -101,10 +102,14 @@ function RowForm({ row, handle, config }: { row: ImageListRow; handle: ReactNode
                     setData(config.fileField, f);
                     setData(config.removeField, false);
                 }}
-                onRemove={() => {
-                    setData(config.fileField, null);
-                    setData(config.removeField, true);
-                }}
+                onRemove={
+                    config.allowRemove === false
+                        ? undefined
+                        : () => {
+                              setData(config.fileField, null);
+                              setData(config.removeField, true);
+                          }
+                }
             />
             <div className="min-w-[160px] flex-1">
                 <Input
@@ -126,10 +131,7 @@ function RowForm({ row, handle, config }: { row: ImageListRow; handle: ReactNode
                 {errors[config.fileField] && <p className="mt-1 text-xs text-red-600">{errors[config.fileField]}</p>}
             </div>
             <label className="flex items-center gap-2 text-sm">
-                <Switch
-                    checked={data.is_published as boolean}
-                    onCheckedChange={(v) => setData('is_published', v)}
-                />
+                <Switch checked={data.is_published as boolean} onCheckedChange={(v) => setData('is_published', v)} />
                 Tampil
             </label>
             <div className="flex gap-2">

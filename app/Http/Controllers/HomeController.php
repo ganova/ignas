@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use App\Models\Faq;
+use App\Models\Photo;
 use App\Models\Portfolio;
 use App\Models\ProcessStep;
 use App\Models\Service;
@@ -61,6 +62,9 @@ class HomeController extends Controller
                     : [],
                 'tools' => Schema::hasTable('tools')
                     ? Tool::published()->ordered()->get(['id', 'name', 'icon', 'category'])->toArray()
+                    : [],
+                'photos' => Schema::hasTable('photos')
+                    ? Photo::published()->ordered()->get(['id', 'title', 'image', 'alt_text', 'caption'])->toArray()
                     : [],
             ];
         });

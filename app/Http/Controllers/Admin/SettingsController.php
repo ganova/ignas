@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\HomeController;
 use App\Models\SiteSetting;
 use App\Support\CacheInvalidator;
+use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,6 +38,7 @@ class SettingsController extends Controller
             'identity.logo_text' => ['required', 'string', 'max:60'],
             'identity.bio_paragraph_1' => ['required', 'string', 'max:400'],
             'identity.bio_paragraph_2' => ['required', 'string', 'max:400'],
+            'identity.portrait' => ['nullable', 'string', 'max:255'],
 
             'hero' => ['required', 'array'],
             'hero.availability_text' => ['required', 'string', 'max:80'],
@@ -102,5 +105,43 @@ class SettingsController extends Controller
         CacheInvalidator::publicContent();
 
         return back()->with('success', 'Pengaturan disimpan.');
+    }
+
+    public function updatePortrait(Request $request): RedirectResponse
+    {
+        $this->authorize('update', SiteSetting::class);
+        $request->validate([
+            'portrait_file' => ['required', 'image', 'mimes:png,jpg,jpeg,webp,avif', 'max:10240'],
+        ]);
+
+        $identity = SiteSetting::group('identity');
+        $this->deletePortraitFile($identity['portrait'] ?? null);
+
+        $path = $request->file('portrait_file')->store('about-portraits', 'public');
+        LogoImage::downscale($path, 1200);
+        $identity['portrait'] = Storage::disk('public')->url($path);
+        SiteSetting::putGroup('identity', $identity);
+        CacheInvalidator::publicContent();
+
+        return back()->with('success', 'Foto profil About diperbarui.');
+    }
+
+    public function destroyPortrait(): RedirectResponse
+    {
+        $this->authorize('update', SiteSetting::class);
+        $identity = SiteSetting::group('identity');
+        $this->deletePortraitFile($identity['portrait'] ?? null);
+        $identity['portrait'] = null;
+        SiteSetting::putGroup('identity', $identity);
+        CacheInvalidator::publicContent();
+
+        return back()->with('success', 'Foto profil About dihapus.');
+    }
+
+    private function deletePortraitFile(mixed $url): void
+    {
+        if (is_string($url) && str_starts_with($url, '/storage/')) {
+            Storage::disk('public')->delete(substr($url, strlen('/storage/')));
+        }
     }
 }

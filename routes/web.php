@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DocumentationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PortfolioCategoryController;
@@ -33,6 +34,7 @@ Route::get('/sitemap.xml', [SeoAssetsController::class, 'sitemap'])->name('seo.s
 
 Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('documentation', DocumentationController::class)->name('documentation');
 
     Route::resource('portfolio', PortfolioController::class)->except(['show']);
     Route::post('portfolio/reorder', [PortfolioController::class, 'reorder'])->name('portfolio.reorder');

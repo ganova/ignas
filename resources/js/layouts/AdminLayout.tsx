@@ -16,6 +16,7 @@ import {
     Globe,
     ExternalLink,
     Tags,
+    BookOpenText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -34,6 +35,7 @@ const NAV = [
     { href: '/admin/messages', label: 'Pesan', icon: Mail },
     { href: '/admin/settings', label: 'Settings', icon: Settings },
     { href: '/admin/seo', label: 'SEO', icon: Search },
+    { href: '/admin/documentation', label: 'Dokumentasi', icon: BookOpenText },
 ];
 
 interface PageProps {
@@ -72,7 +74,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
                 <div className="blob blob-3" />
             </div>
 
-            <aside className="admin-sidebar sticky top-0 h-screen">
+            <aside className="admin-sidebar sticky top-0 h-screen overflow-y-auto">
                 <div className="flex items-center gap-2 px-5 py-5">
                     <span className="admin-logo">
                         Ignas<span className="muted">.studio</span>

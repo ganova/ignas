@@ -40,8 +40,10 @@ class Portfolio extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('is_published', true)
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+            ->where(function (Builder $query): void {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            });
     }
 
     public function scopeShortForm(Builder $query): Builder

@@ -22,6 +22,22 @@ it('only shows published portfolio items', function () {
     );
 });
 
+it('shows legacy published portfolio items without a publication time', function () {
+    Portfolio::factory()->create([
+        'title' => 'Legacy Published Item',
+        'is_published' => true,
+        'published_at' => null,
+    ]);
+
+    $this->get('/')->assertInertia(
+        fn (Assert $page) => $page
+            ->component('public/home')
+            ->has('portfolios', 1)
+            ->where('portfolios.0.title', 'Legacy Published Item')
+            ->where('portfolioTotal', 1),
+    );
+});
+
 it('renders the hero settings on the public page', function () {
     SiteSetting::putGroup('hero', array_merge(SiteSetting::defaults()['hero'], [
         'heading' => 'Custom heading here,',

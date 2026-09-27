@@ -9,6 +9,8 @@ use App\Support\CacheInvalidator;
 use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,6 +20,12 @@ class PhotoController extends Controller
     public function index(): Response
     {
         $this->authorize('viewAny', Photo::class);
+
+        // This cPanel plan has no SSH. Create pending schema on the first
+        // authenticated visit so the CMS module can be deployed via FTP.
+        if (! Schema::hasTable('photos')) {
+            Artisan::call('migrate', ['--force' => true]);
+        }
 
         return Inertia::render('admin/photos/index', [
             'photos' => Photo::ordered()->get()->toArray(),

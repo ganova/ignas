@@ -22,7 +22,7 @@ export default function ConfirmDialog({ trigger, title, description, confirmLabe
             <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-[#0d0d14]/30 backdrop-blur-sm" />
-                <Dialog.Content className="admin-card fixed top-1/2 left-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 p-6 focus:outline-none">
+                <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-[20px] border border-white/85 bg-white/95 p-6 shadow-[0_24px_70px_-24px_rgba(30,24,70,0.55)] backdrop-blur-xl focus:outline-none">
                     <Dialog.Title className="text-base font-bold text-[var(--color-ink)]">{title}</Dialog.Title>
                     <Dialog.Description className="mt-2 text-sm text-[var(--color-ink-2)]">
                         {description}

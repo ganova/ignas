@@ -75,6 +75,30 @@ function ShortFormRail({ items }: { items: PortfolioItem[] }) {
     );
 }
 
+interface ShortFormGroup {
+    key: string;
+    label: string;
+    items: PortfolioItem[];
+}
+
+function groupShortForm(items: PortfolioItem[]): ShortFormGroup[] {
+    const groups = new Map<string, ShortFormGroup>();
+
+    items.forEach((item) => {
+        const label = item.category?.trim() || 'Other Short-Form';
+        const key = label.toLocaleLowerCase();
+        const existing = groups.get(key);
+
+        if (existing) {
+            existing.items.push(item);
+        } else {
+            groups.set(key, { key, label, items: [item] });
+        }
+    });
+
+    return [...groups.values()];
+}
+
 function FormatHeading({ title, note, icons, count }: { title: string; note: string; icons: string[]; count: number }) {
     return (
         <div className="format-head" data-reveal>
@@ -95,6 +119,7 @@ function FormatHeading({ title, note, icons, count }: { title: string; note: str
 export default function PortfolioSection({ portfolios, total }: Props) {
     const shortForm = portfolios.filter((p) => portfolioFormat(p.platform) === 'short');
     const longForm = portfolios.filter((p) => portfolioFormat(p.platform) === 'long');
+    const shortFormGroups = groupShortForm(shortForm);
 
     return (
         <section className="section" id="portfolio">
@@ -121,7 +146,21 @@ export default function PortfolioSection({ portfolios, total }: Props) {
                             icons={['instagram', 'tiktok']}
                             count={shortForm.length}
                         />
-                        <ShortFormRail items={shortForm} />
+                        <div className="shortform-groups">
+                            {shortFormGroups.map((group, groupIndex) => (
+                                <section
+                                    className="shortform-group"
+                                    key={group.key}
+                                    aria-labelledby={`shortform-${groupIndex}`}
+                                >
+                                    <div className="shortform-group-head" data-reveal>
+                                        <h4 id={`shortform-${groupIndex}`}>{group.label}</h4>
+                                        <span>{group.items.length.toString().padStart(2, '0')} projects</span>
+                                    </div>
+                                    <ShortFormRail items={group.items} />
+                                </section>
+                            ))}
+                        </div>
                     </div>
                 )}
 

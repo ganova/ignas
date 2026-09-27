@@ -91,6 +91,8 @@ class SettingsController extends Controller
 
         if (isset($validated['portfolio'])) {
             $validated['portfolio'] = array_map('intval', $validated['portfolio']);
+            $validated['portfolio']['categories'] = SiteSetting::group('portfolio')['categories']
+                ?? SiteSetting::defaults()['portfolio']['categories'];
         }
 
         foreach ($validated as $group => $value) {

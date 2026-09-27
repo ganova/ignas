@@ -15,6 +15,7 @@ import {
     Wrench,
     Globe,
     ExternalLink,
+    Tags,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +24,7 @@ import '../../css/admin.css';
 const NAV = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/portfolio', label: 'Portfolio', icon: ImageIcon },
+    { href: '/admin/portfolio-categories', label: 'Kategori Portfolio', icon: Tags },
     { href: '/admin/services', label: 'Layanan', icon: Sparkles },
     { href: '/admin/process', label: 'Proses', icon: ListChecks },
     { href: '/admin/faqs', label: 'QnA', icon: HelpCircle },
@@ -92,7 +94,11 @@ export default function AdminLayout({ children }: PropsWithChildren) {
 
                 <nav className="flex-1 space-y-1 px-3">
                     {NAV.map((item) => {
-                        const active = item.href === '/admin' ? url === '/admin' : url.startsWith(item.href);
+                        const active = item.href === '/admin'
+                            ? url === '/admin'
+                            : item.href === '/admin/portfolio'
+                              ? url.startsWith('/admin/portfolio') && !url.startsWith('/admin/portfolio-categories')
+                              : url.startsWith(item.href);
                         const Icon = item.icon;
                         return (
                             <Link

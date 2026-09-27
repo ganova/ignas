@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Portfolio;
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,7 +27,10 @@ class PortfolioRequest extends FormRequest
                 Rule::unique('portfolios', 'slug')->ignore($portfolio?->id),
             ],
             'platform' => ['required', Rule::in(array_keys(Portfolio::PLATFORMS))],
-            'category' => ['nullable', 'string', 'max:80'],
+            'category' => [
+                'nullable', 'string', 'max:80',
+                Rule::in($this->categories($portfolio?->category)),
+            ],
             'duration' => ['nullable', 'string', 'max:20'],
             'views_label' => ['nullable', 'string', 'max:40'],
             'description' => ['nullable', 'string', 'max:2000'],
@@ -46,5 +50,24 @@ class PortfolioRequest extends FormRequest
             'seo_title' => ['nullable', 'string', 'max:70'],
             'seo_description' => ['nullable', 'string', 'max:160'],
         ];
+    }
+
+    /** @return array<int, string> */
+    private function categories(?string $current): array
+    {
+        $configured = SiteSetting::group('portfolio')['categories'] ?? [];
+        $existing = Portfolio::query()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category')->all();
+        $categories = collect([...$configured, ...$existing])
+            ->map(fn ($name) => trim((string) $name))
+            ->filter()
+            ->unique(fn ($name) => mb_strtolower($name))
+            ->values()
+            ->all();
+
+        if ($current && ! in_array($current, $categories, true)) {
+            $categories[] = $current;
+        }
+
+        return array_values($categories);
     }
 }

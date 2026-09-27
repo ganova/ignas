@@ -79,6 +79,7 @@ class SiteSetting extends Model
             'portfolio' => [
                 'short_form_limit' => 12,
                 'long_form_limit' => 6,
+                'categories' => ['Talking Head', 'Review', 'Event', 'Promo Brand', 'Recipe'],
             ],
             'seo' => [
                 'default_site_title' => 'Ignas.studio — Video Editor & Motion Designer',

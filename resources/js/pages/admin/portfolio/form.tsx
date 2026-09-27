@@ -35,10 +35,11 @@ interface Portfolio {
 interface Props {
     portfolio?: Portfolio;
     platforms: Record<string, string>;
+    categories: string[];
     thumbnailUrl?: string | null;
 }
 
-export default function PortfolioForm({ portfolio, platforms, thumbnailUrl = null }: Props) {
+export default function PortfolioForm({ portfolio, platforms, categories, thumbnailUrl = null }: Props) {
     const isEdit = !!portfolio;
 
     const { data, setData, post, processing, errors } = useForm({
@@ -150,7 +151,29 @@ export default function PortfolioForm({ portfolio, platforms, thumbnailUrl = nul
                         </div>
                         <div className="space-y-1.5">
                             <Label htmlFor="category">Kategori</Label>
-                            <Input id="category" value={data.category} onChange={(e) => setData('category', e.target.value)} />
+                            <select
+                                id="category"
+                                className="admin-select"
+                                value={data.category}
+                                onChange={(e) => setData('category', e.target.value)}
+                            >
+                                <option value="">Pilih kategori</option>
+                                {portfolio?.category && !categories.includes(portfolio.category) && (
+                                    <option value={portfolio.category}>{portfolio.category} (kategori lama)</option>
+                                )}
+                                {categories.map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.category && <p className="text-xs text-red-600">{errors.category}</p>}
+                            <Link
+                                href="/admin/portfolio-categories"
+                                className="text-xs font-semibold text-[var(--color-purple)] hover:underline"
+                            >
+                                Kelola master kategori
+                            </Link>
                         </div>
                         <div className="space-y-1.5">
                             <Label htmlFor="duration">Durasi</Label>

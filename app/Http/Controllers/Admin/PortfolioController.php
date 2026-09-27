@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PortfolioRequest;
 use App\Models\Portfolio;
+use App\Models\SiteSetting;
 use App\Support\CacheInvalidator;
 use App\Support\LogoImage;
 use Illuminate\Http\RedirectResponse;
@@ -50,6 +51,7 @@ class PortfolioController extends Controller
 
         return Inertia::render('admin/portfolio/form', [
             'platforms' => Portfolio::PLATFORMS,
+            'categories' => $this->categories(null),
         ]);
     }
 
@@ -74,6 +76,7 @@ class PortfolioController extends Controller
             'portfolio' => $portfolio,
             'thumbnailUrl' => $portfolio->resolveThumbnailUrl(),
             'platforms' => Portfolio::PLATFORMS,
+            'categories' => $this->categories($portfolio->category),
         ]);
     }
 
@@ -188,5 +191,24 @@ class PortfolioController extends Controller
         CacheInvalidator::publicContent();
 
         return back();
+    }
+
+    /** @return array<int, string> */
+    private function categories(?string $current): array
+    {
+        $configured = SiteSetting::group('portfolio')['categories'] ?? [];
+        $existing = Portfolio::query()->whereNotNull('category')->distinct()->orderBy('category')->pluck('category')->all();
+        $categories = collect([...$configured, ...$existing])
+            ->map(fn ($name) => trim((string) $name))
+            ->filter()
+            ->unique(fn ($name) => mb_strtolower($name))
+            ->values()
+            ->all();
+
+        if ($current && ! in_array($current, $categories, true)) {
+            $categories[] = $current;
+        }
+
+        return array_values($categories);
     }
 }

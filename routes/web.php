@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\PortfolioCategoryController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\ProcessStepController;
 use App\Http\Controllers\Admin\SeoController;
@@ -37,6 +38,11 @@ Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('
     Route::post('portfolio/reorder', [PortfolioController::class, 'reorder'])->name('portfolio.reorder');
     Route::patch('portfolio/{portfolio}/toggle-publish', [PortfolioController::class, 'togglePublish'])->name('portfolio.toggle-publish');
     Route::patch('portfolio/{portfolio}/toggle-featured', [PortfolioController::class, 'toggleFeatured'])->name('portfolio.toggle-featured');
+
+    Route::get('portfolio-categories', [PortfolioCategoryController::class, 'index'])->name('portfolio-categories.index');
+    Route::post('portfolio-categories', [PortfolioCategoryController::class, 'store'])->name('portfolio-categories.store');
+    Route::put('portfolio-categories/{category}', [PortfolioCategoryController::class, 'update'])->whereNumber('category')->name('portfolio-categories.update');
+    Route::delete('portfolio-categories/{category}', [PortfolioCategoryController::class, 'destroy'])->whereNumber('category')->name('portfolio-categories.destroy');
 
     Route::get('services', [ServiceController::class, 'index'])->name('services.index');
     Route::post('services', [ServiceController::class, 'store'])->name('services.store');

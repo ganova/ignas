@@ -86,7 +86,7 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
             <>
                 <button
                     type="button"
-                    className="spotlight-card"
+                    className={`spotlight-card is-${portfolioFormat(item.platform)}`}
                     data-launching={origin ? '' : undefined}
                     data-reveal
                     aria-label={`Play video: ${item.title}`}
@@ -114,7 +114,7 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
 
     return hasLink ? (
         <a
-            className="spotlight-card"
+            className={`spotlight-card is-${portfolioFormat(item.platform)}`}
             data-reveal
             href={item.external_url as string}
             target="_blank"
@@ -124,7 +124,7 @@ function SpotlightCard({ item, number }: { item: PortfolioItem; number: number }
             {body}
         </a>
     ) : (
-        <article className="spotlight-card is-static" data-reveal>
+        <article className={`spotlight-card is-static is-${portfolioFormat(item.platform)}`} data-reveal>
             {body}
         </article>
     );

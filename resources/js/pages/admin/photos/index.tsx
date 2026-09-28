@@ -30,6 +30,7 @@ export default function PhotosIndex({ photos }: { photos: PhotoRow[] }) {
                 }))}
                 config={{
                     baseUrl: '/admin/photos',
+                    nameField: 'title',
                     fileField: 'photo_file',
                     removeField: 'remove_photo',
                     extraField: 'caption',

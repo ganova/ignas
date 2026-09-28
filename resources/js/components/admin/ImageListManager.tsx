@@ -22,6 +22,7 @@ interface Config {
     fileField: string;
     removeField: string;
     extraField: string;
+    nameField?: string;
     labels: { item: string; image: string; extra: string; extraPlaceholder: string; namePlaceholder: string };
     extraType?: 'url' | 'text';
     allowRemove?: boolean;
@@ -75,8 +76,9 @@ function ImagePicker({
 }
 
 function RowForm({ row, handle, config }: { row: ImageListRow; handle: ReactNode; config: Config }) {
+    const nameField = config.nameField ?? 'name';
     const { data, setData, post, processing, errors } = useForm<FormValues>({
-        name: row.name,
+        [nameField]: row.name,
         [config.extraField]: row.extra ?? '',
         is_published: row.is_published,
         [config.fileField]: null,
@@ -113,11 +115,11 @@ function RowForm({ row, handle, config }: { row: ImageListRow; handle: ReactNode
             />
             <div className="min-w-[160px] flex-1">
                 <Input
-                    value={data.name as string}
-                    onChange={(e) => setData('name', e.target.value)}
+                    value={data[nameField] as string}
+                    onChange={(e) => setData(nameField, e.target.value)}
                     aria-label="Nama"
                 />
-                {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                {errors[nameField] && <p className="mt-1 text-xs text-red-600">{errors[nameField]}</p>}
             </div>
             <div className="min-w-[160px] flex-1">
                 <Input
@@ -154,8 +156,9 @@ function RowForm({ row, handle, config }: { row: ImageListRow; handle: ReactNode
 }
 
 function NewRowForm({ config }: { config: Config }) {
+    const nameField = config.nameField ?? 'name';
     const { data, setData, post, processing, errors, reset } = useForm<FormValues>({
-        name: '',
+        [nameField]: '',
         [config.extraField]: '',
         is_published: true,
         [config.fileField]: null,
@@ -181,10 +184,10 @@ function NewRowForm({ config }: { config: Config }) {
             <div className="min-w-[160px] flex-1">
                 <Input
                     placeholder={config.labels.namePlaceholder}
-                    value={data.name as string}
-                    onChange={(e) => setData('name', e.target.value)}
+                    value={data[nameField] as string}
+                    onChange={(e) => setData(nameField, e.target.value)}
                 />
-                {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                {errors[nameField] && <p className="mt-1 text-xs text-red-600">{errors[nameField]}</p>}
             </div>
             <div className="min-w-[160px] flex-1">
                 <Input
@@ -196,6 +199,13 @@ function NewRowForm({ config }: { config: Config }) {
                 {errors[config.extraField] && <p className="mt-1 text-xs text-red-600">{errors[config.extraField]}</p>}
                 {errors[config.fileField] && <p className="mt-1 text-xs text-red-600">{errors[config.fileField]}</p>}
             </div>
+            <label className="flex min-h-11 items-center gap-2 text-sm">
+                <Switch
+                    checked={data.is_published as boolean}
+                    onCheckedChange={(v) => setData('is_published', v)}
+                />
+                Tampilkan langsung
+            </label>
             <Button size="sm" type="submit" disabled={processing}>
                 Tambah
             </Button>

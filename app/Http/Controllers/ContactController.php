@@ -8,6 +8,7 @@ use App\Models\ContactMessage;
 use App\Models\SiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -18,7 +19,14 @@ class ContactController extends Controller
         $recipient = SiteSetting::group('contact')['email'] ?? null;
 
         if ($recipient) {
-            Mail::to($recipient)->send(new ContactMessageReceived($contactMessage));
+            try {
+                Mail::to($recipient)->send(new ContactMessageReceived($contactMessage));
+            } catch (Throwable $exception) {
+                // The message is already safely stored in the admin inbox.
+                // A temporary SMTP outage must not turn the public form into
+                // a gateway timeout or encourage duplicate submissions.
+                report($exception);
+            }
         }
 
         return back()->with('success', "Thanks! I'll get back to you soon.");

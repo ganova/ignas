@@ -7,9 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { SiteSettings } from '@/types/public';
+import { useState } from 'react';
 
 export default function SettingsIndex({ settings }: { settings: SiteSettings }) {
     const { data, setData, put, processing, errors } = useForm(settings);
+    const [portraitError, setPortraitError] = useState<string | null>(null);
+    const [portraitUploading, setPortraitUploading] = useState(false);
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
@@ -109,14 +112,33 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                             type="file"
                                             className="sr-only"
                                             accept="image/png,image/jpeg,image/webp,image/avif"
+                                            disabled={portraitUploading}
                                             onChange={(event) => {
                                                 const file = event.target.files?.[0];
-                                                if (file)
-                                                    router.post(
-                                                        '/admin/settings/portrait',
-                                                        { portrait_file: file },
-                                                        { forceFormData: true },
-                                                    );
+                                                event.target.value = '';
+                                                if (!file) return;
+
+                                                setPortraitError(null);
+                                                if (file.size > 10 * 1024 * 1024) {
+                                                    setPortraitError('Ukuran foto melebihi batas 10 MB.');
+                                                    return;
+                                                }
+
+                                                setPortraitUploading(true);
+                                                router.post(
+                                                    '/admin/settings/portrait',
+                                                    { portrait_file: file },
+                                                    {
+                                                        forceFormData: true,
+                                                        preserveScroll: true,
+                                                        onError: (uploadErrors) =>
+                                                            setPortraitError(
+                                                                uploadErrors.portrait_file ??
+                                                                    'Upload gagal. Silakan coba foto lain atau muat ulang halaman.',
+                                                            ),
+                                                        onFinish: () => setPortraitUploading(false),
+                                                    },
+                                                );
                                             }}
                                         />
                                     </label>
@@ -132,6 +154,14 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                     <p className="text-xs text-[var(--color-ink-3)]">
                                         JPG, PNG, WebP, atau AVIF. Maksimum 10MB.
                                     </p>
+                                    {portraitUploading && (
+                                        <p className="text-xs font-semibold text-[var(--color-purple)]">
+                                            Mengunggah foto…
+                                        </p>
+                                    )}
+                                    {portraitError && (
+                                        <p className="text-xs font-semibold text-red-600">{portraitError}</p>
+                                    )}
                                 </div>
                             </div>
                         </Field>

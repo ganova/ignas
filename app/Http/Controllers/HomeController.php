@@ -13,6 +13,7 @@ use App\Models\Tool;
 use App\Support\CacheInvalidator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,6 +35,9 @@ class HomeController extends Controller
         $payload = Cache::remember(CacheInvalidator::PUBLIC_HOME_KEY, now()->addHour(), function () {
             $settings = SiteSetting::allGroups();
             $settings['seo']['indexing_enabled'] = SiteSetting::indexingEnabled();
+            $settings['showreel']['video_file_url'] = ! empty($settings['showreel']['video_file'])
+                ? Storage::disk('public')->url($settings['showreel']['video_file'])
+                : null;
             $shortLimit = $this->clampLimit($settings['portfolio']['short_form_limit'] ?? self::SHORT_FORM_LIMIT);
             $longLimit = $this->clampLimit($settings['portfolio']['long_form_limit'] ?? self::LONG_FORM_LIMIT);
 

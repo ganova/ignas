@@ -30,6 +30,10 @@ export interface SiteSettings {
         title: string;
         duration: string;
         video_url: string | null;
+        /** Stored path of an uploaded file; takes priority over video_url. */
+        video_file?: string | null;
+        /** Public URL of video_file, added by the home page controller. */
+        video_file_url?: string | null;
         poster: string | null;
         is_published: boolean;
         autoplay: boolean;

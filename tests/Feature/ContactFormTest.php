@@ -12,7 +12,7 @@ it('stores a contact message when the mail server is unavailable', function () {
     Mail::shouldReceive('to')
         ->once()
         ->with('owner@example.com')
-        ->andThrow(new \RuntimeException('SMTP unavailable'));
+        ->andThrow(new RuntimeException('SMTP unavailable'));
 
     $response = $this->post('/contact', [
         'name' => 'Prospective Client',

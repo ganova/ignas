@@ -19,8 +19,11 @@ class SettingsController extends Controller
     {
         $this->authorize('view', SiteSetting::class);
 
+        $showreelFile = SiteSetting::group('showreel')['video_file'] ?? null;
+
         return Inertia::render('admin/settings/index', [
             'settings' => SiteSetting::allGroups(),
+            'showreelFileUrl' => $showreelFile ? Storage::disk('public')->url($showreelFile) : null,
         ]);
     }
 
@@ -91,6 +94,8 @@ class SettingsController extends Controller
         // Autoplay is force-disabled server-side regardless of admin input,
         // per the design requirement that the showreel never autoplays.
         $validated['showreel']['autoplay'] = false;
+        // The uploaded file is managed by ShowreelMediaController, not this form.
+        $validated['showreel']['video_file'] = SiteSetting::group('showreel')['video_file'] ?? null;
 
         if (isset($validated['portfolio'])) {
             $validated['portfolio'] = array_map('intval', $validated['portfolio']);

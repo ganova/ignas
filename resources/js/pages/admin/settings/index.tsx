@@ -9,7 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { SiteSettings } from '@/types/public';
 import { useState } from 'react';
 
-export default function SettingsIndex({ settings }: { settings: SiteSettings }) {
+export default function SettingsIndex({
+    settings,
+    showreelFileUrl = null,
+}: {
+    settings: SiteSettings;
+    showreelFileUrl?: string | null;
+}) {
     const { data, setData, put, processing, errors } = useForm(settings);
     const [portraitError, setPortraitError] = useState<string | null>(null);
     const [portraitUploading, setPortraitUploading] = useState(false);
@@ -263,8 +269,10 @@ export default function SettingsIndex({ settings }: { settings: SiteSettings }) 
                                 onChange={(e) => set('showreel', 'duration', e.target.value)}
                             />
                         </Field>
-                        <Field label="Video URL">
+                        <ShowreelUpload fileUrl={showreelFileUrl} />
+                        <Field label="Atau link video (Google Drive, YouTube, Vimeo)">
                             <Input
+                                placeholder="https://drive.google.com/file/d/…/view"
                                 value={data.showreel.video_url ?? ''}
                                 onChange={(e) => set('showreel', 'video_url', e.target.value)}
                             />
@@ -430,6 +438,84 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
         <div className="space-y-1.5">
             <Label>{label}</Label>
             {children}
+        </div>
+    );
+}
+
+function ShowreelUpload({ fileUrl }: { fileUrl: string | null }) {
+    const [progress, setProgress] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    function upload(file: File) {
+        setError(null);
+        if (file.size > 150 * 1024 * 1024) {
+            setError('Ukuran video maksimal 150 MB. Kompres videonya dulu, atau pakai link Google Drive/YouTube.');
+            return;
+        }
+        setProgress(0);
+        router.post(
+            '/admin/settings/showreel-video',
+            { video: file },
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onProgress: (event) => setProgress(event?.percentage ?? null),
+                onError: (errors) =>
+                    setError(errors.video ?? 'Upload gagal. Coba lagi, atau pakai link Google Drive/YouTube.'),
+                onFinish: () => setProgress(null),
+            },
+        );
+    }
+
+    return (
+        <div className="space-y-2 rounded-xl border border-black/[0.08] bg-white/50 p-4">
+            <Label>Upload video showreel</Label>
+            {fileUrl ? (
+                <video src={fileUrl} controls preload="metadata" className="aspect-video w-full rounded-lg bg-black" />
+            ) : (
+                <p className="text-xs text-[var(--color-ink-3)]">Belum ada video yang di-upload.</p>
+            )}
+            <div className="flex flex-wrap items-center gap-3">
+                <label className="admin-btn admin-btn-glass admin-btn-sm cursor-pointer">
+                    {fileUrl ? 'Ganti video' : 'Pilih video'}
+                    <input
+                        type="file"
+                        accept="video/mp4,video/webm,video/quicktime"
+                        className="sr-only"
+                        disabled={progress !== null}
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) upload(file);
+                            e.target.value = '';
+                        }}
+                    />
+                </label>
+                {fileUrl && progress === null && (
+                    <button
+                        type="button"
+                        className="text-xs font-semibold text-red-600 underline"
+                        onClick={() => router.delete('/admin/settings/showreel-video', { preserveScroll: true })}
+                    >
+                        Hapus video
+                    </button>
+                )}
+            </div>
+            {progress !== null && (
+                <div className="space-y-1">
+                    <div className="h-2 overflow-hidden rounded-full bg-black/10">
+                        <div
+                            className="h-full bg-gradient-to-r from-[#7A63FF] to-[#4F9BFF] transition-[width]"
+                            style={{ width: `${progress}%` }}
+                        />
+                    </div>
+                    <p className="text-xs text-[var(--color-ink-3)]">Mengupload… {Math.round(progress)}%</p>
+                </div>
+            )}
+            {error && <p className="text-xs text-red-600">{error}</p>}
+            <p className="text-xs text-[var(--color-ink-3)]">
+                MP4, WebM, atau MOV, maksimal 150 MB. Kalau ada video yang di-upload, video ini yang diputar di website
+                (link di bawah diabaikan). Untuk link Google Drive, file harus di-share &quot;Anyone with the link&quot;.
+            </p>
         </div>
     );
 }

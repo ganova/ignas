@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProcessStepController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\ShowreelMediaController;
 use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -78,6 +79,8 @@ Route::middleware(['auth', 'verified', 'auth.session'])->prefix('admin')->name('
 
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('settings/showreel-video', [ShowreelMediaController::class, 'store'])->name('settings.showreel-video.store');
+    Route::delete('settings/showreel-video', [ShowreelMediaController::class, 'destroy'])->name('settings.showreel-video.destroy');
     Route::post('settings/portrait', [SettingsController::class, 'updatePortrait'])->name('settings.portrait.update');
     Route::delete('settings/portrait', [SettingsController::class, 'destroyPortrait'])->name('settings.portrait.destroy');
 

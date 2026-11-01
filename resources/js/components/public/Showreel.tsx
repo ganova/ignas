@@ -22,8 +22,10 @@ export default function Showreel({ showreel }: Props) {
     const source = showreel.video_file_url || showreel.video_url || null;
     const embed = resolveVideoEmbed(source);
     const hasVideo = Boolean(embed);
+    // A Drive/YouTube page link pasted into the poster field is turned into its preview image.
     const poster =
-        showreel.poster || (!showreel.video_file_url ? autoThumbnailFromVideoUrl(showreel.video_url) : null);
+        (showreel.poster ? (autoThumbnailFromVideoUrl(showreel.poster) ?? showreel.poster) : null) ||
+        (!showreel.video_file_url ? autoThumbnailFromVideoUrl(showreel.video_url) : null);
 
     return (
         <div className={`reel ${!hasVideo ? 'reel-empty' : ''} ${playing ? 'is-playing' : ''}`} id="reel">
